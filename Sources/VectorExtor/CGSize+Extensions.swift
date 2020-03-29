@@ -10,7 +10,7 @@ import Foundation
 import CoreGraphics
 #endif
 
-extension CGSize {
+public extension CGSize {
 	var point: CGPoint {
 		CGPoint(x: width, y: height)
 	}

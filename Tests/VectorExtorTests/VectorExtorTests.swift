@@ -1,5 +1,5 @@
 import XCTest
-@testable import VectorExtor
+import VectorExtor
 
 final class VectorExtorTests: XCTestCase {
     func testExample() {

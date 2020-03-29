@@ -11,7 +11,7 @@ import CoreGraphics
 #endif
 
 #if !os(Linux)
-extension CGAffineTransform {
+public extension CGAffineTransform {
 	var offset: CGPoint {
 		CGPoint(x: tx, y: ty)
 	}

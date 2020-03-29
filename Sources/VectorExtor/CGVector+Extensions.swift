@@ -15,7 +15,7 @@ import Foundation
 import CoreGraphics
 #endif
 
-extension CGVector {
+public extension CGVector {
 	var normalized: CGVector {
 		guard !(dx == dy && dx == 0) else { return CGVector(dx: 0, dy: 1) }
 		let distance = sqrt(dx * dx + dy * dy)

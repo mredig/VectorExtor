@@ -10,7 +10,7 @@ import Foundation
 import CoreGraphics
 #endif
 
-extension CGRect {
+public extension CGRect {
 	var maxXY: CGPoint {
 		CGPoint(x: maxX, y: maxY)
 	}

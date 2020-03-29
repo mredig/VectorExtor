@@ -10,11 +10,11 @@ import Foundation
 import CoreGraphics
 #endif
 
-extension Double {
+public extension Double {
 	var cgFloat: CGFloat { CGFloat(self) }
 }
 
-extension CGFloat {
+public extension CGFloat {
 	static var degToRadFactor = CGFloat.pi / 180
 	static var radToDegFactor = 180 / CGFloat.pi
 

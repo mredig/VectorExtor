@@ -7,7 +7,7 @@
 
 import Foundation
 
-extension ClosedRange where Bound: BinaryFloatingPoint {
+public extension ClosedRange where Bound: BinaryFloatingPoint {
 	/// In a range, the value of a given relative location between bounds. For example, in the range `20...40`, the point `0.5` would be `30`
 	func interpolated(at point: Double, clipped: Bool = true) -> Bound {
 		let point = clipped ? Swift.max(0, Swift.min(1, point)) : point

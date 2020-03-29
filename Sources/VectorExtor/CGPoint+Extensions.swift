@@ -9,7 +9,7 @@ import Foundation
 import CoreGraphics
 #endif
 
-extension CGPoint {
+public extension CGPoint {
 	// MARK: - Point Conversion Properties
 	var vector: CGVector {
 		CGVector(dx: x, dy: y)
