@@ -46,4 +46,31 @@ class CGSizeExtensionsTests: XCTestCase {
 
 		XCTAssertEqual(sizeA.midPoint, CGPoint(x: 1.5, y: 2))
 	}
+
+	func testDivision() {
+		let sizeA = CGSize(width: 22, height: 45)
+		let sizeB = CGSize(width: 2, height: 15)
+
+		let sizeC = CGSize(scalar: 2)
+
+		XCTAssertEqual(CGSize(width: 11, height: 3), sizeA / sizeB)
+		XCTAssertEqual(CGSize(width: 11, height: 22.5), sizeA / sizeC)
+		XCTAssertEqual(CGSize(width: 11, height: 22.5), sizeA / 2)
+	}
+
+	func testNormalizationConversion() {
+		let size = CGSize(width: 100, height: 50)
+
+		let normalA = CGPoint(x: 0.9, y: 0.1)
+		let absA = CGPoint(x: 90, y: 5)
+
+		let normalB = CGPoint(x: 0.1, y: 0.8)
+		let absB = CGPoint(x: 10, y: 40)
+
+		XCTAssertEqual(absA, size.normalPointToAbsolute(normalPoint: normalA))
+		XCTAssertEqual(normalA, size.absolutePointToNormal(absolutePoint: absA))
+
+		XCTAssertEqual(absB, size.normalPointToAbsolute(normalPoint: normalB))
+		XCTAssertEqual(normalB, size.absolutePointToNormal(absolutePoint: absB))
+	}
 }

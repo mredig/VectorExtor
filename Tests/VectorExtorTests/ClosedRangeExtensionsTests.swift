@@ -50,6 +50,5 @@ class ClosedRangeExtensionsTests: XCTestCase {
 		XCTAssertEqual(rangeB.linearPoint(of: 40), 1, accuracy: 0.000000001)
 		XCTAssertEqual(rangeB.linearPoint(of: 45), 1, accuracy: 0.000000001)
 		XCTAssertEqual(rangeB.linearPoint(of: 45, clipped: false), 1.25, accuracy: 0.000000001)
-
 	}
 }
