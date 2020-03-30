@@ -28,4 +28,10 @@ class CGRectExtensionsTests: XCTestCase {
 		let scalar = CGRect(scalarOrigin: 3.5, scalarSize: 4.5)
 		XCTAssertEqual(scalar, CGRect(x: 3.5, y: 3.5, width: 4.5, height: 4.5))
 	}
+
+	func testSizeInit() {
+		let size = CGSize(width: 10, height: 50)
+
+		XCTAssertEqual(CGRect(x: 0, y: 0, width: 10, height: 50), CGRect(size: size))
+	}
 }

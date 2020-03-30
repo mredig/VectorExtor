@@ -22,4 +22,8 @@ public extension CGRect {
 	init<FloatNumber: BinaryFloatingPoint>(scalarOrigin: FloatNumber, scalarSize: FloatNumber) {
 		self.init(origin: CGPoint(scalar: scalarOrigin), size: CGSize(scalar: scalarSize))
 	}
+
+	init(size: CGSize) {
+		self.init(origin: .zero, size: size)
+	}
 }
