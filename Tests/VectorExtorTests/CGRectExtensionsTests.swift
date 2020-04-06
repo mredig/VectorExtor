@@ -25,13 +25,21 @@ class CGRectExtensionsTests: XCTestCase {
 
 		XCTAssertEqual(rect2.midPoint, CGPoint(x: 15, y: 15))
 
-		let scalar = CGRect(scalarOrigin: 3.5, scalarSize: 4.5)
-		XCTAssertEqual(scalar, CGRect(x: 3.5, y: 3.5, width: 4.5, height: 4.5))
+		XCTAssertEqual(rect.maxXMinY, CGPoint(x: 10, y: 0))
+		XCTAssertEqual(rect.minXMaxY, CGPoint(x: 0, y: 50))
+
+		XCTAssertEqual(rect2.maxXMinY, CGPoint(x: 20, y: -10))
+		XCTAssertEqual(rect2.minXMaxY, CGPoint(x: 10, y: 40))
 	}
 
 	func testSizeInit() {
 		let size = CGSize(width: 10, height: 50)
 
 		XCTAssertEqual(CGRect(x: 0, y: 0, width: 10, height: 50), CGRect(size: size))
+	}
+
+	func testScalar() {
+		let scalar = CGRect(scalarOrigin: 3.5, scalarSize: 4.5)
+		XCTAssertEqual(scalar, CGRect(x: 3.5, y: 3.5, width: 4.5, height: 4.5))
 	}
 }
