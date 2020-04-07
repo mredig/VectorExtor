@@ -102,4 +102,100 @@ class CGVectorExtensionsTests: XCTestCase {
 		XCTAssertNotEqual(hash0, hash2)
 		XCTAssertNotEqual(hash1, hash2)
 	}
+
+	func testCGVectorOperands() {
+		let vectorA = CGVector(dx: 5, dy: 7)
+		let vectorB = CGVector(dx: 2.5, dy: 5)
+
+		// test negate
+		XCTAssertEqual(-vectorA, CGVector(dx: -5, dy: -7))
+
+		// cgvector with cgvector compuation tests
+		XCTAssertEqual(vectorA + vectorB, CGVector(dx: 7.5, dy: 12))
+		var sizeAB = vectorA
+		sizeAB += vectorB
+		XCTAssertEqual(sizeAB, CGVector(dx: 7.5, dy: 12))
+
+		XCTAssertEqual(vectorA - vectorB, CGVector(dx: 2.5, dy: 2))
+		sizeAB = vectorA
+		sizeAB -= vectorB
+		XCTAssertEqual(sizeAB, CGVector(dx: 2.5, dy: 2))
+
+		XCTAssertEqual(vectorA * vectorB, CGVector(dx: 12.5, dy: 35))
+		sizeAB = vectorA
+		sizeAB *= vectorB
+		XCTAssertEqual(sizeAB, CGVector(dx: 12.5, dy: 35))
+
+		XCTAssertEqual(vectorA / vectorB, CGVector(dx: 2, dy: 1.4))
+		sizeAB = vectorA
+		sizeAB /= vectorB
+		XCTAssertEqual(sizeAB, CGVector(dx: 2, dy: 1.4))
+
+		// cgvector with cgsize computation tests
+		let bSize = vectorB.size
+		XCTAssertEqual(vectorA + bSize, CGVector(dx: 7.5, dy: 12))
+		sizeAB = vectorA
+		sizeAB += bSize
+		XCTAssertEqual(sizeAB, CGVector(dx: 7.5, dy: 12))
+
+		XCTAssertEqual(vectorA - bSize, CGVector(dx: 2.5, dy: 2))
+		sizeAB = vectorA
+		sizeAB -= bSize
+		XCTAssertEqual(sizeAB, CGVector(dx: 2.5, dy: 2))
+
+		XCTAssertEqual(vectorA * bSize, CGVector(dx: 12.5, dy: 35))
+		sizeAB = vectorA
+		sizeAB *= bSize
+		XCTAssertEqual(sizeAB, CGVector(dx: 12.5, dy: 35))
+
+		XCTAssertEqual(vectorA / bSize, CGVector(dx: 2, dy: 1.4))
+		sizeAB = vectorA
+		sizeAB /= bSize
+		XCTAssertEqual(sizeAB, CGVector(dx: 2, dy: 1.4))
+
+		// cgvector with cgpoint computation tests
+		let bPoint = vectorB.point
+		XCTAssertEqual(vectorA + bPoint, CGVector(dx: 7.5, dy: 12))
+		sizeAB = vectorA
+		sizeAB += bPoint
+		XCTAssertEqual(sizeAB, CGVector(dx: 7.5, dy: 12))
+
+		XCTAssertEqual(vectorA - bPoint, CGVector(dx: 2.5, dy: 2))
+		sizeAB = vectorA
+		sizeAB -= bPoint
+		XCTAssertEqual(sizeAB, CGVector(dx: 2.5, dy: 2))
+
+		XCTAssertEqual(vectorA * bPoint, CGVector(dx: 12.5, dy: 35))
+		sizeAB = vectorA
+		sizeAB *= bPoint
+		XCTAssertEqual(sizeAB, CGVector(dx: 12.5, dy: 35))
+
+		XCTAssertEqual(vectorA / bPoint, CGVector(dx: 2, dy: 1.4))
+		sizeAB = vectorA
+		sizeAB /= bPoint
+		XCTAssertEqual(sizeAB, CGVector(dx: 2, dy: 1.4))
+
+		// cgfloat computation tests
+		let cgFloatValue: CGFloat = 5
+		XCTAssertEqual(vectorA + cgFloatValue, CGVector(dx: 10, dy: 12))
+		var pointCGFloat = vectorA
+		pointCGFloat += cgFloatValue
+		XCTAssertEqual(pointCGFloat, CGVector(dx: 10, dy: 12))
+
+		XCTAssertEqual(vectorA - cgFloatValue, CGVector(dx: 0, dy: 2))
+		pointCGFloat = vectorA
+		pointCGFloat -= cgFloatValue
+		XCTAssertEqual(pointCGFloat, CGVector(dx: 0, dy: 2))
+
+		XCTAssertEqual(vectorA * cgFloatValue, CGVector(dx: 25, dy: 35))
+		pointCGFloat = vectorA
+		pointCGFloat *= cgFloatValue
+		XCTAssertEqual(pointCGFloat, CGVector(dx: 25, dy: 35))
+
+		XCTAssertEqual(vectorA / cgFloatValue, CGVector(dx: 1, dy: 1.4))
+		pointCGFloat = vectorA
+		pointCGFloat /= cgFloatValue
+		XCTAssertEqual(pointCGFloat, CGVector(dx: 1, dy: 1.4))
+
+	}
 }

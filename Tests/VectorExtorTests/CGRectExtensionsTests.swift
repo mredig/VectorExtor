@@ -21,7 +21,7 @@ class CGRectExtensionsTests: XCTestCase {
 
 		let orig2 = CGPoint(x: 10, y: -10)
 		let rect2 = CGRect(origin: orig2, size: size)
-		XCTAssertEqual(rect2.maxXY, (size + orig2.size).point)
+		XCTAssertEqual(rect2.maxXY, (size + orig2).point)
 
 		XCTAssertEqual(rect2.midPoint, CGPoint(x: 15, y: 15))
 

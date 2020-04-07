@@ -11,48 +11,8 @@ import CoreGraphics
 #endif
 
 public extension CGSize {
-	var point: CGPoint {
-		CGPoint(x: width, y: height)
-	}
-
 	var midPoint: CGPoint {
 		normalPointToAbsolute(normalPoint: CGPoint(scalar: 0.5))
-	}
-
-	static func + (lhs: CGSize, rhs: CGFloat) -> CGSize {
-		lhs + CGSize(scalar: rhs)
-	}
-
-	static func + (lhs: CGSize, rhs: CGSize) -> CGSize {
-		CGSize(width: lhs.width + rhs.width, height: lhs.height + rhs.height)
-	}
-
-	static func - (lhs: CGSize, rhs: CGFloat) -> CGSize {
-		lhs - CGSize(scalar: rhs)
-	}
-
-	static func - (lhs: CGSize, rhs: CGSize) -> CGSize {
-		lhs + -rhs
-	}
-
-	static func * (lhs: CGSize, rhs: CGFloat) -> CGSize {
-		CGSize(width: lhs.width * rhs, height: lhs.height * rhs)
-	}
-
-	static func * (lhs: CGSize, rhs: CGSize) -> CGSize {
-		CGSize(width: lhs.width * rhs.width, height: lhs.height * rhs.height)
-	}
-
-	static func / (lhs: CGSize, rhs: CGSize) -> CGSize {
-		CGSize(width: lhs.width / rhs.width, height: lhs.height / rhs.height)
-	}
-
-	static func / (lhs: CGSize, rhs: CGFloat) -> CGSize {
-		lhs / CGSize(scalar: rhs)
-	}
-
-	static prefix func - (size: CGSize) -> CGSize {
-		CGSize(width: -size.width, height: -size.height)
 	}
 
 	/// Given a point in UV space (0 representing the minimal dimension value, 1 representing the max), calculate the point it represents in this CGSize.

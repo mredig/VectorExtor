@@ -26,20 +26,8 @@ public extension CGVector {
 		CGVector(dx: -dx, dy: -dy)
 	}
 
-	var point: CGPoint {
-		CGPoint(x: dx, y: dy)
-	}
-
 	var isNormal: Bool {
 		CGPoint.zero.distance(to: self.point, is: 1.0)
-	}
-
-	static func + (lhs: CGVector, rhs: CGVector) -> CGVector {
-		CGVector(dx: lhs.dx + rhs.dx, dy: lhs.dy + rhs.dy)
-	}
-
-	static func * (lhs: CGVector, rhs: CGFloat) -> CGVector {
-		CGVector(dx: lhs.dx * rhs, dy: lhs.dy * rhs)
 	}
 
 	/// 0 is facing right (towards 3 o'Clock). Moves CCW

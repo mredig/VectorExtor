@@ -10,42 +10,6 @@ import CoreGraphics
 #endif
 
 public extension CGPoint {
-	// MARK: - Point Conversion Properties
-	var vector: CGVector {
-		CGVector(dx: x, dy: y)
-	}
-
-	var size: CGSize {
-		CGSize(width: x, height: y)
-	}
-
-	// MARK: - Point convenience Operator Overloads
-	static func + (lhs: CGPoint, rhs: CGVector) -> CGPoint {
-		CGPoint(x: lhs.x + rhs.dx, y: lhs.y + rhs.dy)
-	}
-
-	static func + (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-		lhs + rhs.vector
-	}
-
-	static func - (lhs: CGPoint, rhs: CGVector) -> CGPoint {
-		lhs + rhs.inverted
-	}
-
-	static func - (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-		lhs + rhs.vector.inverted
-	}
-
-	/// multiply two points together
-	static func * (lhs: CGPoint, rhs: CGPoint) -> CGPoint {
-		CGPoint(x: lhs.x * rhs.x, y: lhs.y * rhs.y)
-	}
-
-	/// multiple both x and y by a single scalar
-	static func * (lhs: CGPoint, rhs: CGFloat) -> CGPoint {
-		lhs * CGPoint(x: rhs, y: rhs)
-	}
-
 	// MARK: - Point Initialization
 	init<IntNumber: BinaryInteger>(scalar: IntNumber) {
 		let value = CGFloat(scalar)
