@@ -11,10 +11,6 @@ public protocol GenericTwoIndexVector {
 	var indexOne: CGFloat { get set }
 	var indexTwo: CGFloat { get set }
 
-	var point: CGPoint { get }
-	var vector: CGVector { get }
-	var size: CGSize { get }
-
 	init(indexOne: CGFloat, indexTwo: CGFloat)
 }
 
