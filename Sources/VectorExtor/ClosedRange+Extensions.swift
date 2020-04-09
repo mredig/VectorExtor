@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
+import CoreGraphics
+#endif
 
 public extension ClosedRange where Bound: BinaryFloatingPoint {
 	/// In a range, the value of a given relative location between bounds. For example, in the range `20...40`, the point `0.5` would be `30`

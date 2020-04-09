@@ -6,6 +6,9 @@
 //
 
 import Foundation
+#if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
+import CoreGraphics
+#endif
 
 public protocol GenericTwoIndexVector {
 	var indexOne: CGFloat { get set }
