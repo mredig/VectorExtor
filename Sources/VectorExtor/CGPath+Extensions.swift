@@ -119,18 +119,11 @@ extension CGPath.PathSection {
 	static public var curveResolution = 100
 
 	public var length: CGFloat {
-		guard let start = previous?.endPoint else { return 0 }
-		switch element {
-		case .addCurveTo, .addQuadCurveTo:
-			return calculateLength()
-		case .addLineTo(point: let end):
-			return start.distance(to: end)
-		case .close, .moveTo:
-			return 0
-		}
+		calculateLength()
 	}
 
 	private func calculateLength() -> CGFloat {
+		guard let start = previous?.endPoint else { return 0 }
 		switch element {
 		case .addQuadCurveTo, .addCurveTo:
 			let iterationSection = 1.0 / CGFloat(CGPath.PathSection.curveResolution)
@@ -144,11 +137,12 @@ extension CGPath.PathSection {
 				return $0 + pointStart.distance(to: pointEnd)
 			}
 			return length
+		case .addLineTo(point: let end):
+			return start.distance(to: end)
 		default:
 			return 0
 		}
 	}
-
 
 	public func pointAlongCurve(at t: CGFloat) -> CGPoint? {
 		guard let start = previous?.endPoint else { return nil }
