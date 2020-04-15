@@ -121,44 +121,34 @@ extension CGPath.PathSection {
 	public var length: CGFloat {
 		guard let start = previous?.endPoint else { return 0 }
 		switch element {
-		case .addCurveTo(point: let end, controlPoint1: let control1, controlPoint2: let control2):
-			return cubicCurveLength(start: start, end: end, control1: control1, control2: control2)
-		case .addQuadCurveTo(point: let end, controlPoint: let control):
-			return quadCurveLength(start: start, end: end, control: control)
+		case .addCurveTo, .addQuadCurveTo:
+			return calculateLength()
 		case .addLineTo(point: let end):
 			return start.distance(to: end)
-		case .close, .moveTo(point: _):
+		case .close, .moveTo:
 			return 0
 		}
 	}
 
-	private func quadCurveLength(start: CGPoint, end: CGPoint, control: CGPoint) -> CGFloat {
-		let iterationSection = 1.0 / CGFloat(CGPath.PathSection.curveResolution)
-		let length: CGFloat = (0..<CGPath.PathSection.curveResolution).reduce(0) {
-			let iStart = CGFloat($1) * iterationSection
-			let iEnd = iStart + iterationSection
+	private func calculateLength() -> CGFloat {
+		switch element {
+		case .addQuadCurveTo, .addCurveTo:
+			let iterationSection = 1.0 / CGFloat(CGPath.PathSection.curveResolution)
+			let length: CGFloat = (0..<CGPath.PathSection.curveResolution).reduce(0) {
+				let iStart = CGFloat($1) * iterationSection
+				let iEnd = iStart + iterationSection
 
-			let pointStart = quadBezierPoint(t: iStart, start: start, control: control, end: end)
-			let pointEnd = quadBezierPoint(t: iEnd, start: start, control: control, end: end)
+				guard let pointStart = pointAlongCurve(at: iStart) else { return 0 }
+				guard let pointEnd = pointAlongCurve(at: iEnd) else { return 0 }
 
-			return $0 + pointStart.distance(to: pointEnd)
+				return $0 + pointStart.distance(to: pointEnd)
+			}
+			return length
+		default:
+			return 0
 		}
-		return length
 	}
 
-	private func cubicCurveLength(start: CGPoint, end: CGPoint, control1: CGPoint, control2: CGPoint) -> CGFloat {
-		let iterationSection = 1.0 / CGFloat(CGPath.PathSection.curveResolution)
-		let length: CGFloat = (0..<CGPath.PathSection.curveResolution).reduce(0) {
-			let iStart = CGFloat($1) * iterationSection
-			let iEnd = iStart + iterationSection
-
-			let pointStart = cubicBezierPoint(t: iStart, start: start, control1: control1, control2: control2, end: end)
-			let pointEnd = cubicBezierPoint(t: iEnd, start: start, control1: control1, control2: control2, end: end)
-
-			return $0 + pointStart.distance(to: pointEnd)
-		}
-		return length
-	}
 
 	public func pointAlongCurve(at t: CGFloat) -> CGPoint? {
 		guard let start = previous?.endPoint else { return nil }
