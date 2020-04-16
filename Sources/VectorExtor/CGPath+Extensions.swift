@@ -122,19 +122,14 @@ extension CGPath.PathSection {
 		calculateLength()
 	}
 
+	/// Breaks each curve into `CGPath.PathSection.curveResolution` sections of straight lines and tallies up the total length
 	private func calculateLength() -> CGFloat {
 		guard let start = previous?.endPoint else { return 0 }
 		switch element {
 		case .addQuadCurveTo, .addCurveTo:
 			let iterationSection = 1.0 / CGFloat(CGPath.PathSection.curveResolution)
 			let length: CGFloat = (0..<CGPath.PathSection.curveResolution).reduce(0) {
-				let iStart = CGFloat($1) * iterationSection
-				let iEnd = iStart + iterationSection
-
-				guard let pointStart = pointAlongCurve(at: iStart) else { return 0 }
-				guard let pointEnd = pointAlongCurve(at: iEnd) else { return 0 }
-
-				return $0 + pointStart.distance(to: pointEnd)
+				calculateCurveLengthForSpan(previousValue: $0, iterationStep: $1, iterationSection: iterationSection)
 			}
 			return length
 		case .addLineTo(point: let end):
@@ -144,6 +139,20 @@ extension CGPath.PathSection {
 		}
 	}
 
+	/// Breaks this curve into a `1 / CGPath.PathSection.curveResolution` section of the total curve and returns the length of a straight line between each point
+	private func calculateCurveLengthForSpan(previousValue: CGFloat, iterationStep: Int, iterationSection: CGFloat) -> CGFloat {
+		let iStart = CGFloat(iterationStep) * iterationSection
+		let iEnd = iStart + iterationSection
+
+		guard let pointStart = pointAlongCurve(at: iStart) else { return 0 }
+		guard let pointEnd = pointAlongCurve(at: iEnd) else { return 0 }
+
+		return previousValue + pointStart.distance(to: pointEnd)
+	}
+
+	/// finds the point at `t` progress along the curve. note that progress is NOT linear! `0.5` SHOULD result in halfway
+	/// through the curve, but it's very unlikely that `0.25` will be a quarter of the way through the curve. Whether it's
+	/// less than a quarter or more depends on whether the first control point is closer or further from the starting point.
 	public func pointAlongCurve(at t: CGFloat) -> CGPoint? {
 		guard let start = previous?.endPoint else { return nil }
 		switch element {
