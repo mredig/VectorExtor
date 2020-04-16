@@ -26,9 +26,11 @@ class ScalarExtensionsTests: XCTestCase {
 
 		var value: CGFloat = 0.23
 		XCTAssertEqual(0.23, value.clipped(to: range))
+		XCTAssertEqual(0.23, value.clipped())
 		XCTAssertEqual(5, value.clipped(to: range2))
 		value = 50
 		XCTAssertEqual(1, value.clipped(to: range))
+		XCTAssertEqual(1, value.clipped())
 		XCTAssertEqual(42.3, value.clipped(to: range2))
 		XCTAssertEqual(60, value.clipped(to: 60...100))
 	}

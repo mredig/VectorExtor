@@ -20,7 +20,7 @@ public extension CGFloat {
 
 	var double: Double { Double(self) }
 
-	func clipped(to range: ClosedRange<CGFloat>) -> CGFloat {
+	func clipped(to range: ClosedRange<CGFloat> = 0...1) -> CGFloat {
 		Swift.max(range.lowerBound, Swift.min(self, range.upperBound))
 	}
 }
