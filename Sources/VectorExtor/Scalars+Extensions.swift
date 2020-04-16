@@ -19,4 +19,8 @@ public extension CGFloat {
 	static var radToDegFactor = 180 / CGFloat.pi
 
 	var double: Double { Double(self) }
+
+	func clipped(to range: ClosedRange<CGFloat>) -> CGFloat {
+		Swift.max(range.lowerBound, Swift.min(self, range.upperBound))
+	}
 }
