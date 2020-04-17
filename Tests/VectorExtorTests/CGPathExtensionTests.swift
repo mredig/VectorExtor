@@ -117,6 +117,14 @@ class CGPathExtensionsTests: XCTestCase {
 		expected = CGPoint(x: 5.0, y: 3.5)
 		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
 		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		result = segment.pointAlongCurve(at: 0.0)!
+		expected = CGPoint(x: 2, y: 5)
+		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
+		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		result = segment.pointAlongCurve(at: 1.0)!
+		expected = CGPoint(x: 8, y: 5)
+		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
+		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
 
 		let path2 = generateSimpleCurve2()
 		let segment2 = path2.sections.last!

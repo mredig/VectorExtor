@@ -127,9 +127,9 @@ extension CGPath.PathSection {
 		guard let start = previous?.endPoint else { return 0 }
 		switch element {
 		case .addQuadCurveTo, .addCurveTo:
-			let iterationSection = 1.0 / CGFloat(CGPath.PathSection.curveResolution)
+			let relativeSectionLength = 1.0 / CGFloat(CGPath.PathSection.curveResolution)
 			let length: CGFloat = (0..<CGPath.PathSection.curveResolution).reduce(0) {
-				$0 + calculateCurveLengthForSpan(iterationStep: $1, iterationSection: iterationSection)
+				$0 + calculateCurveLengthForSpan(iterationStep: $1, relativeSectionLength: relativeSectionLength)
 			}
 			return length
 		case .addLineTo(point: let end):
@@ -140,14 +140,19 @@ extension CGPath.PathSection {
 	}
 
 	/// Breaks this curve into a `1 / CGPath.PathSection.curveResolution` section of the total curve and returns the length of a straight line between each point
-	private func calculateCurveLengthForSpan(iterationStep: Int, iterationSection: CGFloat) -> CGFloat {
-		let iStart = CGFloat(iterationStep) * iterationSection
-		let iEnd = iStart + iterationSection
-
-		guard let pointStart = pointAlongCurve(at: iStart) else { return 0 }
-		guard let pointEnd = pointAlongCurve(at: iEnd) else { return 0 }
-
+	private func calculateCurveLengthForSpan(iterationStep: Int, relativeSectionLength: CGFloat) -> CGFloat {
+		guard let (pointStart, pointEnd) = calculateCurveStartStopPointsForSpan(iterationStep: iterationStep, relativeSectionLength: relativeSectionLength) else { return 0 }
 		return pointStart.distance(to: pointEnd)
+	}
+
+	private func calculateCurveStartStopPointsForSpan(iterationStep: Int, relativeSectionLength: CGFloat) -> (start: CGPoint, stop: CGPoint)? {
+		let iStart = CGFloat(iterationStep) * relativeSectionLength
+		let iEnd = iStart + relativeSectionLength
+
+		guard let pointStart = pointAlongCurve(at: iStart) else { return nil }
+		guard let pointEnd = pointAlongCurve(at: iEnd) else { return nil }
+
+		return (pointStart, pointEnd)
 	}
 
 	/// finds the point at `t` progress along the curve. note that progress is NOT linear! `0.5` SHOULD result in halfway
@@ -174,21 +179,18 @@ extension CGPath.PathSection {
 		let desiredLength = length * percent
 
 		var currentLength: CGFloat = 0
-		let iterationSection = 1.0 / CGFloat(CGPath.PathSection.curveResolution)
+		let relativeSectionLength = 1.0 / CGFloat(CGPath.PathSection.curveResolution)
 		var iteration = 0
 		var lastLength: CGFloat = 0
 		while currentLength < desiredLength && iteration < CGPath.PathSection.curveResolution {
-			lastLength = calculateCurveLengthForSpan(iterationStep: iteration, iterationSection: iterationSection)
+			lastLength = calculateCurveLengthForSpan(iterationStep: iteration, relativeSectionLength: relativeSectionLength)
 			currentLength += lastLength
 			iteration += 1
 		}
 
 		let remaining = desiredLength - (currentLength - lastLength)
 		let straightPercentage = remaining / lastLength
-		let iStart = CGFloat(iteration - 1) * iterationSection
-		let iEnd = iStart + iterationSection
-		guard let subPointStart = pointAlongCurve(at: iStart) else { return nil }
-		guard let subPointEnd = pointAlongCurve(at: iEnd) else { return nil }
+		guard let (subPointStart, subPointEnd) = calculateCurveStartStopPointsForSpan(iterationStep: iteration - 1, relativeSectionLength: relativeSectionLength) else { return nil }
 
 		return linearBezierPoint(t: straightPercentage, start: subPointStart, end: subPointEnd)
 	}
