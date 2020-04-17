@@ -99,10 +99,7 @@ class CGPathExtensionsTests: XCTestCase {
 
 	func testPointAlongCurve() {
 		let path = generateSimpleCurve()
-
 		let segment = path.sections.last!
-		print(segment)
-
 
 		var result = segment.pointAlongCurve(atPercent: 0.5)!
 		var expected = CGPoint(x: 5.0, y: 3.5)
