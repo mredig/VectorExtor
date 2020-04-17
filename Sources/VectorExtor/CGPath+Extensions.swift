@@ -172,6 +172,10 @@ extension CGPath.PathSection {
 		}
 	}
 
+	/// Calculated by first calculating the total length, then iterating over divided segments until the current point
+	/// is `percent` length from the starting point. If this is being called repeatedly for the same curve, you may save
+	/// some calculation by provided a precalculated length value. However, providing an incorrect value is untested and
+	/// unsupported. No protections are made against this. Behave yourself.
 	public func pointAlongCurve(atPercent percent: CGFloat, precalculatedLength: CGFloat? = nil) -> CGPoint? {
 		guard previous?.endPoint != nil else { return nil }
 		let percent = percent.clipped()
