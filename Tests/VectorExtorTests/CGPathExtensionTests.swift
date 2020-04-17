@@ -23,6 +23,22 @@ class CGPathExtensionsTests: XCTestCase {
 		return path
 	}
 
+	func generateSimpleCurve() -> CGPath {
+		let path = CGMutablePath()
+
+		path.move(to: CGPoint(x: 2, y: 5))
+		path.addCurve(to: CGPoint(x: 8, y: 5), control1: CGPoint(x: 2, y: 3), control2: CGPoint(x: 8, y: 3))
+		return path
+	}
+
+	func generateSimpleCurve2() -> CGPath {
+		let path = CGMutablePath()
+
+		path.move(to: CGPoint(x: 2, y: 5))
+		path.addCurve(to: CGPoint(x: 8, y: 5), control1: CGPoint(x: 0, y: 4), control2: CGPoint(x: 10, y: 4))
+		return path
+	}
+
 	func testPathElements() {
 		let path = generateBezierScribble()
 
@@ -79,5 +95,50 @@ class CGPathExtensionsTests: XCTestCase {
 		XCTAssertEqual(17.4204, section3.length, accuracy: 0.00001)
 
 		XCTAssertEqual(87.1521, path.length, accuracy: 0.00001)
+	}
+
+	func testPointAlongCurve() {
+		let path = generateSimpleCurve()
+
+		let segment = path.sections.last!
+		print(segment)
+
+
+		var result = segment.pointAlongCurve(atPercent: 0.5)!
+		var expected = CGPoint(x: 5.0, y: 3.5)
+		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
+		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		result = segment.pointAlongCurve(atPercent: 0.25)!
+		expected = CGPoint(x: 3.1969, y: 3.7731)
+		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
+		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		result = segment.pointAlongCurve(at: 0.25)!
+		expected = CGPoint(x: 2.9375, y: 3.875)
+		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
+		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		result = segment.pointAlongCurve(at: 0.5)!
+		expected = CGPoint(x: 5.0, y: 3.5)
+		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
+		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+
+		let path2 = generateSimpleCurve2()
+		let segment2 = path2.sections.last!
+
+		result = segment2.pointAlongCurve(atPercent: 0.5)!
+		expected = CGPoint(x: 5.0, y: 4.25)
+		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
+		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		result = segment2.pointAlongCurve(atPercent: 0.25)!
+		expected = CGPoint(x: 3.12121, y: 4.33243)
+		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
+		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		result = segment2.pointAlongCurve(at: 0.25)!
+		expected = CGPoint(x: 2.375, y: 4.4375)
+		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
+		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		result = segment2.pointAlongCurve(at: 0.5)!
+		expected = CGPoint(x: 5.0, y: 4.25)
+		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
+		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
 	}
 }
