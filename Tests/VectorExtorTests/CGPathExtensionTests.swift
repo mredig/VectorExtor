@@ -101,22 +101,15 @@ class CGPathExtensionsTests: XCTestCase {
 		let path = generateSimpleCurve()
 		let segment = path.sections.last!
 
-		var result = segment.pointAlongCurve(atPercent: 0.5)!
-		var expected = CGPoint(x: 5.0, y: 3.5)
-		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
-		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
-		result = segment.pointAlongCurve(atPercent: 0.25)!
-		expected = CGPoint(x: 3.1969, y: 3.7731)
+		var result = segment.pointAlongCurve(atPercent: 0.25)!
+		var expected = CGPoint(x: 3.1969, y: 3.7731)
 		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
 		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
 		result = segment.pointAlongCurve(at: 0.25)!
 		expected = CGPoint(x: 2.9375, y: 3.875)
 		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
 		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
-		result = segment.pointAlongCurve(at: 0.5)!
-		expected = CGPoint(x: 5.0, y: 3.5)
-		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
-		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+
 		result = segment.pointAlongCurve(at: 0.0)!
 		expected = CGPoint(x: 2, y: 5)
 		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
@@ -129,10 +122,6 @@ class CGPathExtensionsTests: XCTestCase {
 		let path2 = generateSimpleCurve2()
 		let segment2 = path2.sections.last!
 
-		result = segment2.pointAlongCurve(atPercent: 0.5)!
-		expected = CGPoint(x: 5.0, y: 4.25)
-		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
-		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
 		result = segment2.pointAlongCurve(atPercent: 0.25)!
 		expected = CGPoint(x: 3.12121, y: 4.33243)
 		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
@@ -141,9 +130,37 @@ class CGPathExtensionsTests: XCTestCase {
 		expected = CGPoint(x: 2.375, y: 4.4375)
 		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
 		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
-		result = segment2.pointAlongCurve(at: 0.5)!
-		expected = CGPoint(x: 5.0, y: 4.25)
-		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
-		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+
+
+		// confirmed all these points through manual entry in affinity designer
+		let length = segment.length
+		XCTAssertEqual(7.3273191389117525, length, accuracy: 0.00001)
+		let percentagePoints = stride(from: CGFloat(0.0), through: 1.0, by: 0.1).compactMap { segment.pointAlongCurve(atPercent: $0, precalculatedLength: length) }
+		let expectedPoints = [(2.0, 5.0),
+							  (2.2657412053662127, 4.335223675671046),
+							  (2.8580442469607505, 3.9119229270450613),
+							  (3.5479174083977685, 3.6687185210449913),
+							  (4.268764756393066, 3.5404283340746803),
+							  (5.000000000000001, 3.5),
+							  (5.731235243606936, 3.5404283340746803),
+							  (6.452082591602235, 3.6687185210449926),
+							  (7.141955753039252, 3.911922927045062),
+							  (7.734258794633789, 4.335223675671047),
+							  (8.0, 5.0)].map { CGPoint(x: $0.0, y: $0.1) }
+		XCTAssertEqual(expectedPoints, percentagePoints)
+
+		let tPoints = stride(from: CGFloat(0.0), through: 1.0, by: 0.1).compactMap { segment.pointAlongCurve(at: $0) }
+		let expectedtPoints = [(2.0, 5.0),
+							   (2.168, 4.460000000000001),
+							   (2.6240000000000006, 4.040000000000001),
+							   (3.2960000000000003, 3.7399999999999998),
+							   (4.112000000000001, 3.5600000000000005),
+							   (5.0, 3.5),
+							   (5.888000000000001, 3.56),
+							   (6.704000000000001, 3.7399999999999998),
+							   (7.376000000000001, 4.04),
+							   (7.832000000000001, 4.46),
+							   (8.0, 5.0)].map { CGPoint(x: $0.0, y: $0.1) }
+		XCTAssertEqual(expectedtPoints, tPoints)
 	}
 }
