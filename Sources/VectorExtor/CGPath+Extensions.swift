@@ -110,6 +110,27 @@ public extension CGPath {
 			}
 		}
 	}
+
+	func pointAlongPath(atPercent percent: CGFloat, precalculatedLength: CGFloat? = nil) -> CGPoint? {
+		let subpaths = sections
+		let percent = percent.clipped()
+		let length = precalculatedLength ?? self.length
+		let desiredLength = length * percent
+
+		var currentLength: CGFloat = 0
+
+		for subpath in subpaths {
+			let thisSubLength = subpath.length
+			currentLength += thisSubLength
+			if currentLength >= desiredLength {
+				let remaining = desiredLength - (currentLength - thisSubLength)
+				let straightPercentage = thisSubLength != 0 ? remaining / thisSubLength : 0
+				return subpath.pointAlongCurve(atPercent: straightPercentage)
+			}
+		}
+		
+		return nil
+	}
 }
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
@@ -177,7 +198,14 @@ extension CGPath.PathSection {
 	/// some calculation by provided a precalculated length value. However, providing an incorrect value is untested and
 	/// unsupported. No protections are made against this. Behave yourself.
 	public func pointAlongCurve(atPercent percent: CGFloat, precalculatedLength: CGFloat? = nil) -> CGPoint? {
-		guard previous?.endPoint != nil else { return nil }
+		// FIXME: Read note:
+		// check that this work with subpaths - subpaths can move and close, allowing for a move to happen where there might be a previous point, unintentionally
+		guard previous?.endPoint != nil else {
+			if case CGPath.PathElement.moveTo(point: let move) = self.element {
+				return move
+			}
+			return nil
+		}
 		let percent = percent.clipped()
 		let length = precalculatedLength ?? self.length
 		let desiredLength = length * percent
