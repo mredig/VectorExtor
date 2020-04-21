@@ -227,6 +227,7 @@ extension CGPath.PathSection {
 		return linearBezierPoint(t: straightPercentage, start: subPointStart, end: subPointEnd)
 	}
 
+	// adapted from https://github.com/CodingMeSwiftly/UIBezierPath-Length/blob/master/UIBezierPath%2BLength.m
 	// 2 dimensional linear calc
 	private func linearBezierPoint(t: CGFloat, start: CGPoint, end: CGPoint) -> CGPoint {
 		start.interpolation(to: end, location: t, clipped: true)
