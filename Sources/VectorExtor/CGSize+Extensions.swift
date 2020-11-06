@@ -15,6 +15,9 @@ public extension CGSize {
 		normalPointToAbsolute(normalPoint: CGPoint(scalar: 0.5))
 	}
 
+	var min: CGFloat { Swift.min(width, height) }
+	var max: CGFloat { Swift.max(width, height) }
+
 	/// Given a point in UV space (0 representing the minimal dimension value, 1 representing the max), calculate the point it represents in this CGSize.
 	func normalPointToAbsolute(normalPoint: CGPoint) -> CGPoint {
 		(normalPoint.size * self).point

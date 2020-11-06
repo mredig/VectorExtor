@@ -168,5 +168,14 @@ class CGSizeExtensionsTests: XCTestCase {
 		pointCGFloat /= cgFloatValue
 		XCTAssertEqual(pointCGFloat, CGSize(width: 1, height: 1.4))
 	}
-	
+
+	func testSizeMinMax() {
+		let sizeA = CGSize(width: 5, height: 7)
+		let sizeB = CGSize(width: 2.5, height: 5)
+
+		XCTAssertEqual(sizeA.min, 5)
+		XCTAssertEqual(sizeA.max, 7)
+		XCTAssertEqual(sizeB.min, 2.5)
+		XCTAssertEqual(sizeB.max, 5)
+	}
 }
