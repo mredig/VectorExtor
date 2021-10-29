@@ -178,4 +178,12 @@ class CGSizeExtensionsTests: XCTestCase {
 		XCTAssertEqual(sizeB.min, 2.5)
 		XCTAssertEqual(sizeB.max, 5)
 	}
+
+	func testAspectRatio() {
+		XCTAssertEqual(2, CGSize(width: 10, height: 5).aspectRatio)
+		XCTAssertEqual(4/3.0, CGSize(width: 4, height: 3).aspectRatio)
+		XCTAssertEqual(1.3333, CGSize(width: 4, height: 3).aspectRatio, accuracy: 0.01)
+		XCTAssertEqual(0, CGSize(width: 4, height: 0).aspectRatio)
+		XCTAssertEqual(1.5, CGSize(width: 6000, height: 4000).aspectRatio)
+	}
 }
