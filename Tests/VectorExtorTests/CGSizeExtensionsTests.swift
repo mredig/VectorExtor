@@ -186,4 +186,76 @@ class CGSizeExtensionsTests: XCTestCase {
 		XCTAssertEqual(0, CGSize(width: 4, height: 0).aspectRatio)
 		XCTAssertEqual(1.5, CGSize(width: 6000, height: 4000).aspectRatio)
 	}
+
+	func testScaling() {
+		let startLandscapeSize = CGSize(width: 1920, height: 1080)
+		let startSquareSize = CGSize(scalar: 500)
+		let startPortraitSize = CGSize(width: 3000, height: 4000)
+
+		let fitInSquare = CGSize(scalar: 300)
+		let fitInPortraitARect = CGSize(width: 200, height: 400)
+		let fitInPortraitBRect = CGSize(width: 200, height: 220)
+		let fitInLandscapeRect = CGSize(width: 500, height: 100)
+
+		// landscape in square
+		XCTAssertEqual(CGSize(width: 300, height: 168.75), startLandscapeSize.scaledToFit(within: fitInSquare))
+
+		// landscape in portrait
+		XCTAssertEqual(CGSize(width: 200, height: 112.5), startLandscapeSize.scaledToFit(within: fitInPortraitARect))
+
+		// landscape in landscape
+		let expectedLandscapeToLandscape = CGSize(width: 177.7777777778, height: 100)
+		let resultingLandscapeToLandscape = startLandscapeSize.scaledToFit(within: fitInLandscapeRect)
+		XCTAssertEqual(expectedLandscapeToLandscape.width, resultingLandscapeToLandscape.width, accuracy: 0.001)
+		XCTAssertEqual(expectedLandscapeToLandscape.height, resultingLandscapeToLandscape.height, accuracy: 0.001)
+
+
+		// square in square
+		XCTAssertEqual(CGSize(scalar: 300), startSquareSize.scaledToFit(within: fitInSquare))
+
+		// square in portrait
+		XCTAssertEqual(CGSize(scalar: 200), startSquareSize.scaledToFit(within: fitInPortraitARect))
+
+		// square in landscape
+		XCTAssertEqual(CGSize(scalar: 100), startSquareSize.scaledToFit(within: fitInLandscapeRect))
+
+
+		// portrait in square
+		XCTAssertEqual(CGSize(width: 225, height: 300), startPortraitSize.scaledToFit(within: fitInSquare))
+
+		// portrait in portrait
+		let expectedPortraitToPortraitA = CGSize(width: 200, height: 266.66666667)
+		let resultingPortraitToPortraitA = startPortraitSize.scaledToFit(within: fitInPortraitARect)
+		XCTAssertEqual(expectedPortraitToPortraitA.width, resultingPortraitToPortraitA.width, accuracy: 0.001)
+		XCTAssertEqual(expectedPortraitToPortraitA.height, resultingPortraitToPortraitA.height, accuracy: 0.001)
+		XCTAssertEqual(CGSize(width: 165, height: 220), startPortraitSize.scaledToFit(within: fitInPortraitBRect))
+
+		// portrait in landscape
+		XCTAssertEqual(CGSize(width: 75, height: 100), startPortraitSize.scaledToFit(within: fitInLandscapeRect))
+
+		// scale up
+		XCTAssertEqual(CGSize(width: 1920, height: 384), fitInLandscapeRect.scaledToFit(within: startLandscapeSize))
+	}
+
+	func testScaleDown() {
+		let startLandscapeSize = CGSize(width: 1920, height: 1080)
+		let startSquareSize = CGSize(scalar: 500)
+		let startPortraitSize = CGSize(width: 3000, height: 4000)
+
+		let fitInSquare = CGSize(scalar: 300)
+		let fitInPortraitRect = CGSize(width: 200, height: 400)
+		let fitInLandscapeRect = CGSize(width: 500, height: 100)
+
+		// landscape in square
+		XCTAssertEqual(CGSize(width: 300, height: 168.75), startLandscapeSize.scaledDownToFit(within: fitInSquare))
+
+		// square in portrait
+		XCTAssertEqual(CGSize(scalar: 200), startSquareSize.scaledDownToFit(within: fitInPortraitRect))
+
+		// portrait in landscape
+		XCTAssertEqual(CGSize(width: 75, height: 100), startPortraitSize.scaledDownToFit(within: fitInLandscapeRect))
+
+		// scale up
+		XCTAssertEqual(fitInLandscapeRect, fitInLandscapeRect.scaledDownToFit(within: startLandscapeSize))
+	}
 }

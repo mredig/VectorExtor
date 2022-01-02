@@ -33,6 +33,27 @@ public extension CGSize {
 		(absolutePoint.size / self).point
 	}
 
+	/// Keeps aspect ratio and scales to fit within the given size.
+	func scaledToFit(within size: CGSize) -> CGSize {
+		let horizScale = size.width / width
+		let vertScale = size.height / height
+
+		let smallerScale = Swift.min(horizScale, vertScale)
+		return self * smallerScale
+	}
+
+	func scaledDownToFit(within size: CGSize) -> CGSize {
+		let horizScale = size.width / width
+		let vertScale = size.height / height
+
+		let smallerScale = Swift.min(horizScale, vertScale)
+		if smallerScale < 1 {
+			return self * smallerScale
+		} else {
+			return self
+		}
+	}
+
 	init<IntNumber: BinaryInteger>(scalar: IntNumber) {
 		let value = CGFloat(scalar)
 		self.init(width: value, height: value)
