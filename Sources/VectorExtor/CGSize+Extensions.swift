@@ -54,6 +54,26 @@ public extension CGSize {
 		}
 	}
 
+	func scaledToFill(size: CGSize) -> CGSize {
+		let horizScale = size.width / width
+		let vertScale = size.height / height
+
+		let largerScale = Swift.max(horizScale, vertScale)
+		return self * largerScale
+	}
+
+	func scaledDownToFill(size: CGSize) -> CGSize {
+		let horizScale = size.width / width
+		let vertScale = size.height / height
+
+		let largerScale = Swift.max(horizScale, vertScale)
+		if largerScale < 1 {
+			return self * largerScale
+		} else {
+			return self
+		}
+	}
+
 	init<IntNumber: BinaryInteger>(scalar: IntNumber) {
 		let value = CGFloat(scalar)
 		self.init(width: value, height: value)
