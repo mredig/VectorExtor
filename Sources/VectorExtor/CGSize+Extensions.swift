@@ -42,6 +42,7 @@ public extension CGSize {
 		return self * smallerScale
 	}
 
+	/// Keeps aspect ratio and scales to fit within the given size, but will not return a value larger than the original.
 	func scaledDownToFit(within size: CGSize) -> CGSize {
 		let horizScale = size.width / width
 		let vertScale = size.height / height
@@ -54,6 +55,7 @@ public extension CGSize {
 		}
 	}
 
+	/// Keeps aspect ratio and scales to fill the given size.
 	func scaledToFill(size: CGSize) -> CGSize {
 		let horizScale = size.width / width
 		let vertScale = size.height / height
@@ -62,6 +64,7 @@ public extension CGSize {
 		return self * largerScale
 	}
 
+	/// Keeps aspect ratio and scales to fill the given size, but will not return a value larger than the original.
 	func scaledDownToFill(size: CGSize) -> CGSize {
 		let horizScale = size.width / width
 		let vertScale = size.height / height
