@@ -35,8 +35,7 @@ public extension CGSize {
 
 	/// Keeps aspect ratio and scales to fit within the given size.
 	func scaledToFit(within size: CGSize) -> CGSize {
-		let horizScale = size.width / width
-		let vertScale = size.height / height
+		let (horizScale, vertScale) = relativeScales(for: size)
 
 		let smallerScale = Swift.min(horizScale, vertScale)
 		return self * smallerScale
@@ -44,8 +43,7 @@ public extension CGSize {
 
 	/// Keeps aspect ratio and scales to fit within the given size, but will not return a value larger than the original.
 	func scaledDownToFit(within size: CGSize) -> CGSize {
-		let horizScale = size.width / width
-		let vertScale = size.height / height
+		let (horizScale, vertScale) = relativeScales(for: size)
 
 		let smallerScale = Swift.min(horizScale, vertScale)
 		if smallerScale < 1 {
@@ -57,8 +55,7 @@ public extension CGSize {
 
 	/// Keeps aspect ratio and scales to fill the given size.
 	func scaledToFill(size: CGSize) -> CGSize {
-		let horizScale = size.width / width
-		let vertScale = size.height / height
+		let (horizScale, vertScale) = relativeScales(for: size)
 
 		let largerScale = Swift.max(horizScale, vertScale)
 		return self * largerScale
@@ -66,8 +63,7 @@ public extension CGSize {
 
 	/// Keeps aspect ratio and scales to fill the given size, but will not return a value larger than the original.
 	func scaledDownToFill(size: CGSize) -> CGSize {
-		let horizScale = size.width / width
-		let vertScale = size.height / height
+		let (horizScale, vertScale) = relativeScales(for: size)
 
 		let largerScale = Swift.max(horizScale, vertScale)
 		if largerScale < 1 {
@@ -75,6 +71,14 @@ public extension CGSize {
 		} else {
 			return self
 		}
+	}
+
+	/// Returns the value that you'd multiply each of the current CGSize's sides to get the input `size`
+	private func relativeScales(for size: CGSize) -> (widthScale: Double, heightScale: Double) {
+		let widthScale = size.width / width
+		let heightScale = size.height / height
+
+		return (widthScale, heightScale)
 	}
 
 	init<IntNumber: BinaryInteger>(scalar: IntNumber) {
