@@ -28,3 +28,18 @@ public extension ClosedRange where Bound: BinaryFloatingPoint {
 		return clipped ? Swift.min(Swift.max(normalValue / normalUpper, 0), 1) : normalValue / normalUpper
 	}
 }
+
+public extension ClosedRange where Bound: BinaryInteger {
+	func offset(by value: Bound) -> Self {
+		let offsetUpper = upperBound + value
+		let offsetLower = lowerBound + value
+		return offsetLower...offsetUpper
+	}
+}
+public extension ClosedRange where Bound: BinaryFloatingPoint {
+	func offset(by value: Bound) -> Self {
+		let offsetUpper = upperBound + value
+		let offsetLower = lowerBound + value
+		return offsetLower...offsetUpper
+	}
+}

@@ -51,4 +51,19 @@ class ClosedRangeExtensionsTests: XCTestCase {
 		XCTAssertEqual(rangeB.linearPoint(of: 45), 1, accuracy: 0.000000001)
 		XCTAssertEqual(rangeB.linearPoint(of: 45, clipped: false), 1.25, accuracy: 0.000000001)
 	}
+
+	func testOffset() {
+		let rangeA = 0...100
+		let rangeB = (-5)...5
+		let rangeC = (-20)...(-10.0)
+
+		XCTAssertEqual(rangeA.offset(by: 5), 5...105)
+		XCTAssertEqual(rangeA.offset(by: -5), -5...95)
+
+		XCTAssertEqual(rangeB.offset(by: 5), 0...10)
+		XCTAssertEqual(rangeB.offset(by: -5), (-10)...0)
+
+		XCTAssertEqual(rangeC.offset(by: 5), (-15)...(-5))
+		XCTAssertEqual(rangeC.offset(by: -5), (-25)...(-15))
+	}
 }
