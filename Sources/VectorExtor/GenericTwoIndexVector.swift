@@ -7,6 +7,8 @@ public protocol GenericTwoIndexVector {
 	var indexOne: CGFloat { get set }
 	var indexTwo: CGFloat { get set }
 
+	var simd: SIMD2<Double> { get set }
+
 	init(indexOne: CGFloat, indexTwo: CGFloat)
 }
 
@@ -94,6 +96,14 @@ extension GenericTwoIndexVector {
 	public var point: CGPoint { CGPoint(indexOne: indexOne, indexTwo: indexTwo) }
 	public var vector: CGVector { CGVector(indexOne: indexOne, indexTwo: indexTwo) }
 	public var size: CGSize { CGSize(indexOne: indexOne, indexTwo: indexTwo) }
+	public var simd: SIMD2<Double> {
+		get { SIMD2(x: indexOne, y: indexTwo) }
+		set {
+			indexOne = newValue.x
+			indexTwo = newValue.y
+		}
+	}
+
 }
 
 // MARK: - Conformance
