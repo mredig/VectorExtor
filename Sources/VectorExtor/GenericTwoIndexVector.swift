@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Michael Redig on 4/6/20.
-//
-
 import Foundation
 #if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
 import CoreGraphics

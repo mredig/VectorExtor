@@ -1,14 +1,5 @@
-//
-//  File.swift
-//  
-//
-//  Created by Michael Redig on 3/29/20.
-//
-
-// CoreGraphics isn't available on Linux, but there's partial support for CGPoint and some of its siblings.
-// In this extension, CGVector is the most important omission, so I've covered a reimplementation of it as best I could.
-// But that should only be present on Linux as it's a reimplementation if it's elsewhere
-
+//CoreGraphics isn't available on Linux, but there's partial support for CGPoint and some of its siblings.
+//In this extension, CGVector is the most important omission from Linux, so I've covered a basic reimplementation.
 
 import Foundation
 #if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
@@ -93,5 +84,4 @@ extension CGVector: Codable {
 		try container.encode(dy)
 	}
 }
-
 #endif

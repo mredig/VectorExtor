@@ -1,9 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Michael Redig on 4/14/20.
-//
 #if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
 import CoreGraphics
 

@@ -1,9 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Michael Redig on 3/29/20.
-//
 import Foundation
 #if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
 import CoreGraphics
@@ -132,4 +126,3 @@ extension CGPoint: Hashable {
 		hasher.combine(y)
 	}
 }
-
