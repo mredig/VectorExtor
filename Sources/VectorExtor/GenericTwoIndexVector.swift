@@ -103,6 +103,24 @@ extension GenericTwoIndexVector {
 			indexTwo = newValue.y
 		}
 	}
+	/// When getting, returns a SIMD3 where the x and y are populated, respectively, while the z is given 0.
+	/// When setting, `indexOne` becomes the value of the SIMD3 `x`, and `indexTwo` becomes `y`
+	public var simd3xy: SIMD3<Double> {
+		get { SIMD3(x: indexOne, y: indexTwo, z: 0) }
+		set {
+			indexOne = newValue.x
+			indexTwo = newValue.y
+		}
+	}
+	/// When getting, returns a SIMD3 where the x and z are populated, respectively, while the y is given 0.
+	/// When setting, `indexOne` becomes the value of the SIMD3 `x`, and `indexTwo` becomes `z`
+	public var simd3xz: SIMD3<Double> {
+		get { SIMD3(x: indexOne, y: 0, z: indexTwo) }
+		set {
+			indexOne = newValue.x
+			indexTwo = newValue.z
+		}
+	}
 
 }
 
