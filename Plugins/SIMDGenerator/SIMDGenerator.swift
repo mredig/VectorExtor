@@ -2,7 +2,7 @@ import Foundation
 import PackagePlugin
 
 @main
-struct SIMDFixer: CommandPlugin {
+struct SIMDGenerator: CommandPlugin {
 	func performCommand(context: PackagePlugin.PluginContext, arguments: [String]) async throws {
 		guard
 			let module = context.package.sourceModules.first(where: { $0.moduleName == "VectorExtor"} )

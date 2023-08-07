@@ -19,16 +19,13 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
 		.plugin(
-			name: "SIMDFixer",
+			name: "SIMDGenerator",
 			capability: .command(
-				intent: .custom(verb: "simd-fixer", description: "Generate SIMD code"),
+				intent: .custom(verb: "simd-generator", description: "Generate SIMD code"),
 				permissions: [.writeToPackageDirectory(reason: "Code Gen")])),
         .target(
             name: "VectorExtor",
-            dependencies: [],
-			plugins: [
-				"SIMDFixer"
-			]),
+            dependencies: []),
         .testTarget(
             name: "VectorExtorTests",
             dependencies: ["VectorExtor"]),
