@@ -30,7 +30,7 @@ struct SIMDFixer: CommandPlugin {
 
 		let simdFloatURL = simdDoubleURL
 			.deletingLastPathComponent()
-			.appending(component: "SIMD+Float")
+			.appending(component: "SIMD3+Float")
 			.appendingPathExtension("swift")
 		try simdFloatString.write(to: simdFloatURL, atomically: true, encoding: .utf8)
 	}
