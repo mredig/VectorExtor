@@ -5,7 +5,7 @@
 import Foundation
 import simd
 
-public extension SIMD3 where Scalar == Float {
+public extension SIMD2 where Scalar == Float {
 	// MARK: - Distance Convenience
 	func distance(to other: Self) -> Scalar {
 		simd.distance(self, other)
