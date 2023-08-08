@@ -67,11 +67,54 @@ public extension SIMD3 where Scalar == Float {
 		simd_normalize(self)
 	}
 
+	mutating func normalize() {
+		self = normalized
+	}
+
 	var normalizedFast: Self {
 		simd_fast_normalize(self)
 	}
 
+	mutating func normalizeFast() {
+		self = normalizedFast
+	}
+
 	var normalizedPrecise: Self {
 		simd_precise_normalize(self)
+	}
+
+	mutating func normalizePrecise() {
+		self = normalizedPrecise
+	}
+
+	// MARK: - linear interpolation convenience
+	mutating func mix(with other: Self, at location: Float, clipped: Bool = true) {
+		let location = clipped ? Swift.max(0, Swift.min(1, location)) : location
+		self = simd.mix(self, other, t: location)
+	}
+
+	func mixed(with other: Self, at location: Float, clipped: Bool = true) -> Self {
+		var new = self
+		new.mix(with: other, at: location, clipped: clipped)
+		return new
+	}
+
+	// MARK: - common math conveniences
+	@available(macOS 12.0, iOS 15.0, tvOS 15.0, *)
+	var cubeRoot: Self {
+		simd.cbrt(self)
+	}
+
+	var ceil: Self {
+		simd.ceil(self)
+	}
+
+	var floor: Self {
+		simd.floor(self)
+	}
+
+	@available(macOS 12.0, iOS 15.0, tvOS 15.0, *)
+	var rounded: Self {
+		simd.round(self)
 	}
 }
