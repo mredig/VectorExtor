@@ -18,12 +18,16 @@ public extension CGSize {
 
 	/// Given a point in UV space (0 representing the minimal dimension value, 1 representing the max), calculate the point it represents in this CGSize.
 	func normalPointToAbsolute(normalPoint: CGPoint) -> CGPoint {
-		(normalPoint.size * self).point
+		var normalPoint = normalPoint
+		normalPoint.simd = normalPoint.simd * self.simd
+		return normalPoint
 	}
 
 	/// Convert a point from absolute space (0-size.dimension.max) to UV space (0 representing the minimal dimension value, 1 representing the max); calculate the normalized point representing it in this CGSize.
 	func absolutePointToNormal(absolutePoint: CGPoint) -> CGPoint {
-		(absolutePoint.size / self).point
+		var absolutePoint = absolutePoint
+		absolutePoint.simd = absolutePoint.simd / self.simd
+		return absolutePoint
 	}
 
 	/// Keeps aspect ratio and scales to fit within the given size.
@@ -68,10 +72,9 @@ public extension CGSize {
 
 	/// Returns the value that you'd multiply each of the current CGSize's sides to get the input `size`
 	private func relativeScales(for size: CGSize) -> (widthScale: Double, heightScale: Double) {
-		let widthScale = size.width / width
-		let heightScale = size.height / height
+		let scales = size.simd / simd
 
-		return (widthScale, heightScale)
+		return (scales.x, scales.y)
 	}
 
 	init<IntNumber: BinaryInteger>(scalar: IntNumber) {
