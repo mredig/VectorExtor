@@ -9,12 +9,15 @@ import CoreGraphics
 public extension CGVector {
 	var normalized: CGVector {
 		guard !(dx == dy && dx == 0) else { return CGVector(dx: 0, dy: 1) }
-		let distance = sqrt(dx * dx + dy * dy)
-		return CGVector(dx: dx / distance, dy: dy / distance)
+		var new = self
+		new.simd = simd.normalized
+		return new
 	}
 
 	var inverted: CGVector {
-		CGVector(dx: -dx, dy: -dy)
+		var new = self
+		new.simd = new.simd.inverted
+		return new
 	}
 
 	var isNormal: Bool {
