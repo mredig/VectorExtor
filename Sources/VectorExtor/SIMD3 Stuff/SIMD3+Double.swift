@@ -117,4 +117,10 @@ public extension SIMD3 where Scalar == Double {
 	var rounded: Self {
 		simd.round(self)
 	}
+
+	var inverted: Self {
+		var new = self
+		new *= -1
+		return new
+	}
 }

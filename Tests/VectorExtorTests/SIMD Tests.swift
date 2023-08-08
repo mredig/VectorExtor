@@ -106,5 +106,9 @@ class SIMDTests: XCTestCase {
 
 		XCTAssertEqual(x.rounded, SIMD3(22, 60, 44))
 		XCTAssertEqual(y.rounded, SIMD3(45, 45, 80))
+
+		XCTAssertEqual(x.inverted, SIMD3(-21.5, -60.25, -44))
+		XCTAssertEqual(y.inverted, SIMD3(-44.5, -44.75, -80))
+		XCTAssertEqual(SIMD3(-1, -2, 3.0).inverted, SIMD3(1, 2, -3))
 	}
 }
