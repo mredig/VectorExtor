@@ -1,4 +1,5 @@
 import Foundation
+import simd
 #if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
 import CoreGraphics
 #endif
@@ -17,20 +18,18 @@ public extension CGPoint {
 
 	// MARK: - Point Distance
 	/// calculate the distance between points
-	func distance(to point: CGPoint) -> CGFloat {
-		sqrt((x - point.x) * (x - point.x) + (y - point.y) * (y - point.y))
+	func distance(to point: CGPoint) -> Double {
+		simd.distance(to: point.simd)
 	}
 
 	/// Determine if the distance between points is less than or equal to a comparison value. Quicker than actually calculating the distance
-	func distance(to point: CGPoint, isWithin value: CGFloat) -> Bool {
-		(x - point.x) * (x - point.x) + (y - point.y) * (y - point.y) <= (value * value)
+	func distance(to point: CGPoint, isWithin value: Double) -> Bool {
+		simd.distance(to: point.simd, isWithin: value)
 	}
 
 	/// Since float values are sloppy, it's highly likely two values that can be considered equal will not be EXACTLY equal. Adjust the `slop` to your liking or set to `0` to disable.
-	func distance(to point: CGPoint, is value: CGFloat, slop: CGFloat = 0.000001) -> Bool {
-		let distanceIsh = (x - point.x) * (x - point.x) + (y - point.y) * (y - point.y)
-		let valueIsh = value * value
-		return abs(valueIsh - distanceIsh) <= slop
+	func distance(to point: CGPoint, is value: Double, slop: Double = 0.000001) -> Bool {
+		simd.distance(to: point.simd, is: value, slop: slop)
 	}
 
 	// MARK: - Point Stepping
@@ -38,8 +37,8 @@ public extension CGPoint {
 	returns a point in the direction of the `toward` CGPoint, iterated at a speed of `speed` points per second. `interval`
 	is the duration of time since the last frame was updated
 	*/
-	func stepped(toward destination: CGPoint, interval: TimeInterval, speed: CGFloat) -> CGPoint {
-		let adjustedSpeed = speed * interval.cgFloat
+	func stepped(toward destination: CGPoint, interval: TimeInterval, speed: Double) -> CGPoint {
+		let adjustedSpeed = speed * interval
 		let vectorBetweenPoints = vector(facing: destination)
 
 		if distance(to: destination, isWithin: adjustedSpeed) {
@@ -68,19 +67,27 @@ public extension CGPoint {
 
 	/// The vector is the rate the point will step per second. This function assumes the speed is baked into the vector.
 	func stepped(withVector vector: CGVector, interval: TimeInterval) -> CGPoint {
-		let adjustedVector = vector * interval.cgFloat
-		return self + adjustedVector
+		var new = self
+		new.step(withVector: vector, interval: interval)
+		return new
 	}
 
 	/// See `stepped` variation, just mutates self with the result
 	mutating func step(withVector vector: CGVector, interval: TimeInterval) {
-		self = stepped(withVector: vector, interval: interval)
+		let adjustedVector = vector.simd * interval
+		self.simd += adjustedVector
 	}
 
 	// MARK: - Point Facing
 	/// Generates a vector in the direction of `facing`, optionally (default) normalized.
 	func vector(facing point: CGPoint, normalized normalize: Bool = true) -> CGVector {
-		let direction = vector.inverted + point.vector
+		var vec = vector
+		vec.simd = _vector(facing: point, normalized: normalize)
+		return vec
+	}
+
+	private func _vector(facing point: CGPoint, normalized normalize: Bool) -> SIMD2<Double> {
+		let direction = simd.inverted + point.simd
 		return normalize ? direction.normalized : direction
 	}
 
@@ -90,10 +97,10 @@ public extension CGPoint {
 	/// everything is behind `point2`, `0` means everything directly beside and
 	/// behind, while `-1` means NOTHING is behind.
 	func isBehind(point2: CGPoint, facing direction: CGVector, withLatitude latitude: CGFloat) -> Bool {
-		let facingSelf = point2.vector(facing: self)
-		let normalDirection = direction.normalized
+		let facingSelf = point2._vector(facing: self, normalized: true)
+		let normalDirection = direction.simd.normalized
 
-		let dotProduct = facingSelf.dx * normalDirection.dx + facingSelf.dy * normalDirection.dy
+		let dotProduct = dot(facingSelf, normalDirection)
 
 		return dotProduct < latitude
 	}
@@ -104,19 +111,21 @@ public extension CGPoint {
 	/// everything is in front of `point2`, `0` means everything directly beside and
 	/// behind, while `-1` means NOTHING is in front.
 	func isInFront(of point2: CGPoint, facing direction: CGVector, withLatitude latitude: CGFloat) -> Bool {
-		let facingSelf = point2.vector(facing: self)
-		let normalDirection = direction.normalized
+		let facingSelf = point2._vector(facing: self, normalized: true)
+		let normalDirection = direction.simd.normalized
 
-		let dotProduct = facingSelf.dx * normalDirection.dx + facingSelf.dy * normalDirection.dy
+		let dotProduct = dot(facingSelf, normalDirection)
 
 		return dotProduct > -latitude
 	}
 
 	// MARK: - Linear Interpolation
-	func interpolation(to point: CGPoint, location: CGFloat, clipped: Bool = true) -> CGPoint {
+	func interpolation(to point: CGPoint, location: Double, clipped: Bool = true) -> CGPoint {
 		let location = clipped ? max(0, min(1, location)) : location
-		let difference = (point - self) * location
-		return self + difference
+
+		var new = self
+		new.simd.mix(with: point.simd, at: location, clipped: clipped)
+		return new
 	}
 }
 
