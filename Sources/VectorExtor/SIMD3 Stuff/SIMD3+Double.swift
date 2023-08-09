@@ -62,6 +62,12 @@ public extension SIMD3 where Scalar == Double {
 		return abs(valueIsh - lengthIsh) <= slop
 	}
 
+	// MARK: - Vectorization
+	func vector(facing other: Self, normalized: Bool = true) -> Self {
+		let direction = inverted + other
+		return normalized ? direction.normalizedFast : direction
+	}
+
 	// MARK: - Normalization Convenience
 	var normalized: Self {
 		simd_normalize(self)

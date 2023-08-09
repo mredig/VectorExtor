@@ -82,14 +82,10 @@ public extension CGPoint {
 	/// Generates a vector in the direction of `facing`, optionally (default) normalized.
 	func vector(facing point: CGPoint, normalized normalize: Bool = true) -> CGVector {
 		var vec = vector
-		vec.simd = _vector(facing: point, normalized: normalize)
+		vec.simd = vec.simd.vector(facing: point.simd, normalized: normalize)
 		return vec
 	}
 
-	private func _vector(facing point: CGPoint, normalized normalize: Bool) -> SIMD2<Double> {
-		let direction = simd.inverted + point.simd
-		return normalize ? direction.normalized : direction
-	}
 
 	/// Determines whether the CGPoint instance is behind the passed in CGPoint,
 	/// `point2`. `facing` is the `direction` that `point2` is facing.
@@ -97,7 +93,7 @@ public extension CGPoint {
 	/// everything is behind `point2`, `0` means everything directly beside and
 	/// behind, while `-1` means NOTHING is behind.
 	func isBehind(point2: CGPoint, facing direction: CGVector, withLatitude latitude: CGFloat) -> Bool {
-		let facingSelf = point2._vector(facing: self, normalized: true)
+		let facingSelf = point2.simd.vector(facing: self.simd, normalized: true)
 		let normalDirection = direction.simd.normalized
 
 		let dotProduct = dot(facingSelf, normalDirection)
@@ -111,7 +107,7 @@ public extension CGPoint {
 	/// everything is in front of `point2`, `0` means everything directly beside and
 	/// behind, while `-1` means NOTHING is in front.
 	func isInFront(of point2: CGPoint, facing direction: CGVector, withLatitude latitude: CGFloat) -> Bool {
-		let facingSelf = point2._vector(facing: self, normalized: true)
+		let facingSelf = point2.simd.vector(facing: self.simd, normalized: true)
 		let normalDirection = direction.simd.normalized
 
 		let dotProduct = dot(facingSelf, normalDirection)
