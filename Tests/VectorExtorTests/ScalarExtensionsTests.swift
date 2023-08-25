@@ -14,9 +14,20 @@ class ScalarExtensionsTests: XCTestCase {
 	func testDoubleAndCGFloat() {
 		let valueCG: CGFloat = 12.34
 		let valueDouble = 12.34
+		let floatVal: Float = 12.34
+		let float16Val: Float16 = 12.34
+		#if arch(x86_64)
+		let float80Val: Float80 = 12.34
+		#endif
 
-		XCTAssertEqual(valueCG.double, valueDouble)
-		XCTAssertEqual(valueDouble.cgFloat, valueCG)
+		XCTAssertEqual(valueCG.toDouble, valueDouble)
+		XCTAssertEqual(valueDouble.toCGFloat, valueCG)
+		XCTAssertEqual(valueDouble.toFloat, floatVal)
+		XCTAssertEqual(valueDouble.toFloat16, float16Val)
+
+		#if arch(x86_64)
+		XCTAssertEqual(valueDouble.toFloat80, float80Val)
+		#endif
 	}
 
 	func testRangeClipping() {

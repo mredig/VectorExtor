@@ -4,6 +4,7 @@ import CoreGraphics
 #endif
 
 public extension Double {
+	@available(*, deprecated, message: "Use `toCGFloat` instead", renamed: "toCGFloat")
 	var cgFloat: CGFloat { CGFloat(self) }
 }
 
@@ -11,6 +12,7 @@ public extension CGFloat {
 	static var degToRadFactor = CGFloat.pi / 180
 	static var radToDegFactor = 180 / CGFloat.pi
 
+	@available(*, deprecated, message: "Use `toDouble` instead", renamed: "toDouble")
 	var double: Double { Double(self) }
 }
 
@@ -32,6 +34,15 @@ public extension BinaryFloatingPoint {
 	func clipped(to range: ClosedRange<Self> = 0...1) -> Self {
 		Swift.max(range.lowerBound, Swift.min(self, range.upperBound))
 	}
+
+	@available(macOS 11.0, *)
+	var toFloat16: Float16 { Float16(self) }
+	var toFloat: Float { Float(self) }
+	var toCGFloat: CGFloat { CGFloat(self) }
+	var toDouble: Double { Double(self) }
+	#if arch(x86_64)
+	var toFloat80: Float80 { Float80(self) }
+	#endif
 }
 
 public extension BinaryInteger {
