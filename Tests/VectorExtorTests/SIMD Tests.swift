@@ -91,6 +91,7 @@ class SIMDTests: XCTestCase {
 		XCTAssertEqual(a.distance(to: quarterway), b.distance(to: threeQuarterway))
 	}
 
+	@available(macOS 11.0, iOS 15.0, *)
 	func testMathStuff() {
 		let x = SIMD3(21.5, 60.25, 44.0)
 		let y = SIMD3(44.5, 44.75, 80.0)

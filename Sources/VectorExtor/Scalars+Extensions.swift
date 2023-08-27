@@ -35,8 +35,10 @@ public extension BinaryFloatingPoint {
 		Swift.max(range.lowerBound, Swift.min(self, range.upperBound))
 	}
 
-	@available(macOS 11.0, *)
+	#if arch(arm64) // see Float16 docs
+	@available(macOS 11.0, iOS 14.0, *)
 	var toFloat16: Float16 { Float16(self) }
+	#endif
 	var toFloat: Float { Float(self) }
 	var toCGFloat: CGFloat { CGFloat(self) }
 	var toDouble: Double { Double(self) }

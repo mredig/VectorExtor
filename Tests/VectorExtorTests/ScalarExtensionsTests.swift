@@ -11,6 +11,7 @@ class ScalarExtensionsTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
+	@available(macOS 11.0, iOS 14.0, *)
 	func testDoubleAndCGFloat() {
 		let valueCG: CGFloat = 12.34
 		let valueDouble = 12.34
