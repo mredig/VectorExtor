@@ -94,12 +94,12 @@ public extension SIMD2 where Scalar == Float {
 	}
 
 	// MARK: - linear interpolation convenience
-	mutating func mix(with other: Self, at location: Float, clipped: Bool = true) {
+	mutating func mix(with other: Self, at location: Scalar, clipped: Bool = true) {
 		let location = clipped ? Swift.max(0, Swift.min(1, location)) : location
 		self = simd.mix(self, other, t: location)
 	}
 
-	func mixed(with other: Self, at location: Float, clipped: Bool = true) -> Self {
+	func mixed(with other: Self, at location: Scalar, clipped: Bool = true) -> Self {
 		var new = self
 		new.mix(with: other, at: location, clipped: clipped)
 		return new
@@ -128,5 +128,9 @@ public extension SIMD2 where Scalar == Float {
 		var new = self
 		new *= -1
 		return new
+	}
+
+	func clamped(to range: ClosedRange<Scalar>) -> Self {
+		simd.clamp(self, min: range.lowerBound, max: range.upperBound)
 	}
 }

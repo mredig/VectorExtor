@@ -112,4 +112,15 @@ class SIMDTests: XCTestCase {
 		XCTAssertEqual(y.inverted, SIMD3(-44.5, -44.75, -80))
 		XCTAssertEqual(SIMD3(-1, -2, 3.0).inverted, SIMD3(1, 2, -3))
 	}
+
+	func testClamping() {
+		let x2 = SIMD2(0, 1.5)
+		let x3 = SIMD3(0, 1.5, -0.5)
+
+		let result2 = x2.clamped(to: 0...1)
+		let result3 = x3.clamped(to: 0...1)
+
+		XCTAssertEqual(result2, SIMD2(0, 1))
+		XCTAssertEqual(result3, SIMD3(0, 1, 0))
+	}
 }
