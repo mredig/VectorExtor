@@ -116,11 +116,14 @@ public extension CGPoint {
 	}
 
 	// MARK: - Linear Interpolation
+	@available(*, deprecated, renamed: "interpolation(to:tValue:clamped:)", message: "Use variant with `clamped` instead")
 	func interpolation(to point: CGPoint, location: Double, clipped: Bool = true) -> CGPoint {
-		let location = clipped ? max(0, min(1, location)) : location
+		interpolation(to: point, tValue: location, clamped: clipped)
+	}
 
+	func interpolation(to point: CGPoint, tValue: Double, clamped: Bool = true) -> CGPoint {
 		var new = self
-		new.simd.mix(with: point.simd, at: location, clipped: clipped)
+		new.simd.mix(with: point.simd, at: tValue, clamped: clamped)
 		return new
 	}
 }

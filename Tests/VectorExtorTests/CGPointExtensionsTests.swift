@@ -163,19 +163,19 @@ class CGPointExtensionsTests: XCTestCase {
 		let pointB = CGPoint(x: -100, y: 50)
 		let pointC = CGPoint(x: 20, y: 1)
 
-		XCTAssertEqual(pointA.interpolation(to: pointC, location: 0.5), CGPoint(x: 10, y: 0.5))
-		XCTAssertEqual(pointA.interpolation(to: pointC, location: 1), CGPoint(x: 20, y: 1))
-		XCTAssertEqual(pointA.interpolation(to: pointC, location: 0), CGPoint(x: 0, y: 0))
-		XCTAssertEqual(pointA.interpolation(to: pointC, location: -1), CGPoint(x: 0, y: 0))
-		XCTAssertEqual(pointA.interpolation(to: pointC, location: 2), CGPoint(x: 20, y: 1))
-		XCTAssertEqual(pointA.interpolation(to: pointC, location: 2, clipped: false), CGPoint(x: 40, y: 2))
-		XCTAssertEqual(pointA.interpolation(to: pointC, location: -1, clipped: false), CGPoint(x: -20, y: -1))
+		XCTAssertEqual(pointA.interpolation(to: pointC, tValue: 0.5), CGPoint(x: 10, y: 0.5))
+		XCTAssertEqual(pointA.interpolation(to: pointC, tValue: 1), CGPoint(x: 20, y: 1))
+		XCTAssertEqual(pointA.interpolation(to: pointC, tValue: 0), CGPoint(x: 0, y: 0))
+		XCTAssertEqual(pointA.interpolation(to: pointC, tValue: -1), CGPoint(x: 0, y: 0))
+		XCTAssertEqual(pointA.interpolation(to: pointC, tValue: 2), CGPoint(x: 20, y: 1))
+		XCTAssertEqual(pointA.interpolation(to: pointC, tValue: 2, clamped: false), CGPoint(x: 40, y: 2))
+		XCTAssertEqual(pointA.interpolation(to: pointC, tValue: -1, clamped: false), CGPoint(x: -20, y: -1))
 
-		XCTAssertEqual(pointB.interpolation(to: pointC, location: 0.5), CGPoint(x: -40, y: 25.5))
-		XCTAssertEqual(pointB.interpolation(to: pointC, location: 0), CGPoint(x: -100, y: 50))
-		XCTAssertEqual(pointB.interpolation(to: pointC, location: 1), CGPoint(x: 20, y: 1))
-		XCTAssertEqual(pointC.interpolation(to: pointB, location: 0), CGPoint(x: 20, y: 1))
-		XCTAssertEqual(pointC.interpolation(to: pointB, location: 1), CGPoint(x: -100, y: 50))
+		XCTAssertEqual(pointB.interpolation(to: pointC, tValue: 0.5), CGPoint(x: -40, y: 25.5))
+		XCTAssertEqual(pointB.interpolation(to: pointC, tValue: 0), CGPoint(x: -100, y: 50))
+		XCTAssertEqual(pointB.interpolation(to: pointC, tValue: 1), CGPoint(x: 20, y: 1))
+		XCTAssertEqual(pointC.interpolation(to: pointB, tValue: 0), CGPoint(x: 20, y: 1))
+		XCTAssertEqual(pointC.interpolation(to: pointB, tValue: 1), CGPoint(x: -100, y: 50))
 	}
 
 	func testCGPointBehindAndFront() {

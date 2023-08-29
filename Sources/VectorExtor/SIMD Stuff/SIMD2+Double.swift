@@ -194,15 +194,15 @@ public extension SIMD2 where Scalar == Double {
 
 	// MARK: - linear interpolation convenience
 	/// Performs linear interpolation between two points, weighted by location and sets the result as the current value.
-	mutating func mix(with other: Self, at location: Scalar, clipped: Bool = true) {
-		let location = clipped ? Swift.max(0, Swift.min(1, location)) : location
+	mutating func mix(with other: Self, at tValue: Scalar, clamped: Bool = true) {
+		let location = clamped ? Swift.max(0, Swift.min(1, tValue)) : tValue
 		self = simd.mix(self, other, t: location)
 	}
 
 	/// Performs linear interpolation between two points, weighted by location.
-	func mixed(with other: Self, at location: Scalar, clipped: Bool = true) -> Self {
+	func mixed(with other: Self, at tValue: Scalar, clamped: Bool = true) -> Self {
 		var new = self
-		new.mix(with: other, at: location, clipped: clipped)
+		new.mix(with: other, at: tValue, clamped: clamped)
 		return new
 	}
 

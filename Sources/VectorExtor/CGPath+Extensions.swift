@@ -107,7 +107,7 @@ public extension CGPath {
 
 	func pointAlongPath(atPercent percent: CGFloat, precalculatedLength: CGFloat? = nil) -> CGPoint? {
 		let subpaths = sections
-		let percent = percent.clipped()
+		let percent = percent.clamped()
 		let length = precalculatedLength ?? self.length
 		let desiredLength = length * percent
 
@@ -200,7 +200,7 @@ extension CGPath.PathSection {
 			}
 			return nil
 		}
-		let percent = percent.clipped()
+		let percent = percent.clamped()
 		let length = precalculatedLength ?? self.length
 		let desiredLength = length * percent
 
@@ -224,7 +224,7 @@ extension CGPath.PathSection {
 	// adapted from https://github.com/CodingMeSwiftly/UIBezierPath-Length/blob/master/UIBezierPath%2BLength.m
 	// 2 dimensional linear calc
 	private func linearBezierPoint(t: CGFloat, start: CGPoint, end: CGPoint) -> CGPoint {
-		start.interpolation(to: end, location: t, clipped: true)
+		start.interpolation(to: end, tValue: t, clamped: true)
 	}
 
 	// 2 dimensional cubic bezier calc
