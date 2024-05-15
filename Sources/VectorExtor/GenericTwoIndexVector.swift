@@ -91,6 +91,14 @@ public extension GenericTwoIndexVector {
 	}
 }
 
+@inlinable public func abs<V: GenericTwoIndexVector>(_ vector: V) -> V {
+	V(indexOne: abs(vector.indexOne), indexTwo: abs(vector.indexTwo))
+}
+
+@inlinable public func negate<V: GenericTwoIndexVector>(_ vector: V) -> V {
+	V(indexOne: -vector.indexOne, indexTwo: -vector.indexTwo)
+}
+
 // MARK: - Conversion
 extension GenericTwoIndexVector {
 	public var point: CGPoint { CGPoint(indexOne: indexOne, indexTwo: indexTwo) }

@@ -92,4 +92,28 @@ class GenericTwoIndexVectorTests: XCTestCase {
 		XCTAssertNotEqual(vector.simd3xy, expectedXZ)
 		XCTAssertNotEqual(size.simd3xy, expectedXZ)
 	}
+
+	func testAbsValue() throws {
+		let size = CGSize(width: 1920, height: 1080)
+		let pos = CGPoint(x: 640, y: -480)
+		let vec = CGVector(dx: -1024, dy: 768)
+		let final = CGPoint(x: -1280, y: -720)
+
+		XCTAssertEqual(abs(size), CGSize(width: 1920, height: 1080))
+		XCTAssertEqual(abs(pos), CGPoint(x: 640, y: 480))
+		XCTAssertEqual(abs(vec), CGVector(dx: 1024, dy: 768))
+		XCTAssertEqual(abs(final), CGPoint(x: 1280, y: 720))
+	}
+
+	func testNegateValue() throws {
+		let size = CGSize(width: 1920, height: 1080)
+		let pos = CGPoint(x: 640, y: -480)
+		let vec = CGVector(dx: -1024, dy: 768)
+		let final = CGPoint(x: -1280, y: -720)
+
+		XCTAssertEqual(negate(size), CGSize(width: -1920, height: -1080))
+		XCTAssertEqual(negate(pos), CGPoint(x: -640, y: 480))
+		XCTAssertEqual(negate(vec), CGVector(dx: 1024, dy: -768))
+		XCTAssertEqual(negate(final), CGPoint(x: 1280, y: 720))
+	}
 }
