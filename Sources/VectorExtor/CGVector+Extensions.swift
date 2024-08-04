@@ -24,6 +24,17 @@ public extension CGVector {
 		CGPoint.zero.distance(to: self.point, is: 1.0)
 	}
 
+	var speed: Double {
+		get {
+			guard self != .zero else { return 0 }
+			return CGPoint.zero.distance(to: self.point)
+		}
+		set {
+			guard self != .zero else { return }
+			self = normalized * newValue
+		}
+	}
+
 	/// 0 is facing right (towards 3 o'Clock). Moves CCW
 	init(fromRadian radian: CGFloat) {
 		self.init(dx: cos(radian), dy: sin(radian))
