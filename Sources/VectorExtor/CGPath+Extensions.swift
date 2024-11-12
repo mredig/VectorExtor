@@ -14,7 +14,8 @@ public extension CGPath {
 	class PathSection {
 		public let element: PathElement
 		var next: PathSection?
-		var previous: PathSection?
+//		var previous: PathSection?
+		weak var previous: PathSection?
 
 		var endPoint: CGPoint? {
 			switch element {

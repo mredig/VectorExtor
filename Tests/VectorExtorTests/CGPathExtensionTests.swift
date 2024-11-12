@@ -192,4 +192,28 @@ class CGPathExtensionsTests: XCTestCase {
 							  (8.0, 5.0)].map { CGPoint(x: $0.0, y: $0.1) }
 		XCTAssertEqual(expectedPoints, percentagePoints)
 	}
+
+	// this is just a scratchpad - not meant as a real test
+	func testDeallocate() throws {
+		class Classy {}
+		typealias Gen<T: AnyObject> = () -> T
+		let sem = DispatchSemaphore(value: 0)
+
+		func a<T: AnyObject>(_ gen: Gen<T>) {
+			let foo = gen()
+			print("immediate: \(foo)")
+			DispatchQueue.global().asyncAfter(deadline: .now() + 3) { [weak foo] in
+				print("delayed: \(foo as Any)")
+				XCTAssertNil(foo)
+				sem.signal()
+			}
+		}
+
+		a({
+			let t = generateSimplePath()
+			let sections = t.sections.first!
+			return sections
+		})
+		sem.wait()
+	}
 }
