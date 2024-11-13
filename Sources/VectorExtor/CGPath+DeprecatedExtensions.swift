@@ -1,4 +1,4 @@
-#if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
+#if canImport(CoreGraphics)
 import CoreGraphics
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)

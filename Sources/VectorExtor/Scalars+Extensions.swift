@@ -1,5 +1,5 @@
 import Foundation
-#if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
+#if canImport(CoreGraphics)
 import CoreGraphics
 #endif
 
