@@ -50,15 +50,15 @@ public extension CGPath.Segment {
 //		return linearBezierPoint(t: straightPercentage, start: subPointStart, end: subPointEnd)
 //	}
 	struct QuadCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
-		private var _startPoint: CGPoint { startPoint ?? .zero }
-		public let startPoint: CGPoint?
+		public var startPoint: CGPoint { _startPoint ?? .zero }
+		public let _startPoint: CGPoint?
 		public let controlPoint: CGPoint
 		public let endPoint: CGPoint
 
 		public var length: Double { calculateQuadraticCurveLengthAdaptive() }
 
 		public init(startPoint: CGPoint?, controlPoint: CGPoint, endPoint: CGPoint) {
-			self.startPoint = startPoint
+			self._startPoint = startPoint
 			self.controlPoint = controlPoint
 			self.endPoint = endPoint
 		}
@@ -70,7 +70,7 @@ public extension CGPath.Segment {
 			var stack: [QuadCurve] = [self]
 
 			while let curve = stack.popLast() {
-				let (start, control, end) = (curve._startPoint, curve.controlPoint, curve.endPoint)
+				let (start, control, end) = (curve.startPoint, curve.controlPoint, curve.endPoint)
 				let netLength = start.distance(to: control) + control.distance(to: end)
 
 				if start.distance(to: end, is: netLength, slop: 0.01) {
@@ -86,19 +86,19 @@ public extension CGPath.Segment {
 		}
 
 		public func split(at t: Double) -> (QuadCurve, QuadCurve) {
-			let mid1 = _startPoint.interpolation(to: controlPoint, tValue: t)
+			let mid1 = startPoint.interpolation(to: controlPoint, tValue: t)
 			let mid2 = controlPoint.interpolation(to: endPoint, tValue: t)
 			let middle = mid1.interpolation(to: mid2, tValue: t)
 
-			let a = QuadCurve(startPoint: _startPoint, controlPoint: mid1, endPoint: middle)
+			let a = QuadCurve(startPoint: startPoint, controlPoint: mid1, endPoint: middle)
 			let b = QuadCurve(startPoint: middle, controlPoint: mid2, endPoint: endPoint)
 			return (a, b)
 		}
 	}
 
 	struct CubicCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
-		private var _startPoint: CGPoint { startPoint ?? .zero }
-		public let startPoint: CGPoint?
+		public var startPoint: CGPoint { _startPoint ?? .zero }
+		public let _startPoint: CGPoint?
 		public let control1: CGPoint
 		public let control2: CGPoint
 		public let endPoint: CGPoint
@@ -106,7 +106,7 @@ public extension CGPath.Segment {
 		public var length: Double { calculateCubicCurveLengthAdaptive() }
 
 		public init(startPoint: CGPoint?, control1: CGPoint, control2: CGPoint, endPoint: CGPoint) {
-			self.startPoint = startPoint
+			self._startPoint = startPoint
 			self.control1 = control1
 			self.control2 = control2
 			self.endPoint = endPoint
@@ -119,7 +119,7 @@ public extension CGPath.Segment {
 			var stack: [CubicCurve] = [self]
 
 			while let curve = stack.popLast() {
-				let (start, control1, control2, end) = (curve._startPoint, curve.control1, curve.control2, curve.endPoint)
+				let (start, control1, control2, end) = (curve.startPoint, curve.control1, curve.control2, curve.endPoint)
 				let netLength = start.distance(to: control1) + control1.distance(to: control2) + control2.distance(to: end)
 
 				if start.distance(to: end, is: netLength, slop: 0.01) {
@@ -135,7 +135,7 @@ public extension CGPath.Segment {
 
 		public func split(at t: Double) -> (CubicCurve, CubicCurve) {
 			let t = t.clamped()
-			let mid1 = _startPoint.interpolation(to: control1, tValue: t)
+			let mid1 = startPoint.interpolation(to: control1, tValue: t)
 			let mid2 = control1.interpolation(to: control2, tValue: t)
 			let mid3 = control2.interpolation(to: endPoint, tValue: t)
 
@@ -144,45 +144,45 @@ public extension CGPath.Segment {
 
 			let middle = mid4.interpolation(to: mid5, tValue: t)
 
-			let a = CubicCurve(startPoint: _startPoint, control1: mid1, control2: mid4, endPoint: middle)
+			let a = CubicCurve(startPoint: startPoint, control1: mid1, control2: mid4, endPoint: middle)
 			let b = CubicCurve(startPoint: middle, control1: mid5, control2: mid3, endPoint: endPoint)
 			return (a, b)
 		}
 	}
 
 	struct LineCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
-		internal var _startPoint: CGPoint { startPoint ?? .zero }
-		public let startPoint: CGPoint?
+		public var startPoint: CGPoint { _startPoint ?? .zero }
+		public let _startPoint: CGPoint?
 		public let endPoint: CGPoint
 
-		public var length: Double { _startPoint.distance(to: endPoint) }
+		public var length: Double { startPoint.distance(to: endPoint) }
 
 		public init(startPoint: CGPoint?, endPoint: CGPoint) {
-			self.startPoint = startPoint
+			self._startPoint = startPoint
 			self.endPoint = endPoint
 		}
 	}
 
 	struct MoveCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
-		public let startPoint: CGPoint?
+		public let _startPoint: CGPoint?
 		public let endPoint: CGPoint
 
 		public var length: Double { 0 }
 
 		public init(startPoint: CGPoint? = nil, endPoint: CGPoint) {
-			self.startPoint = startPoint
+			self._startPoint = startPoint
 			self.endPoint = endPoint
 		}
 	}
 
 	struct CloseCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
-		public let startPoint: CGPoint?
+		public let _startPoint: CGPoint?
 		public let endPoint: CGPoint
 
 		public var length: Double { 0 }
 
 		public init(startPoint: CGPoint? = nil, endPoint: CGPoint) {
-			self.startPoint = startPoint
+			self._startPoint = startPoint
 			self.endPoint = endPoint
 		}
 	}

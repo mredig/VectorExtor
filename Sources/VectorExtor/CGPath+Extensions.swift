@@ -4,8 +4,7 @@ import CoreGraphics
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath {
 	protocol CurveProtocol {
-		// TODO: change to _
-		var startPoint: CGPoint? { get }
+		var _startPoint: CGPoint? { get }
 		var endPoint: CGPoint { get }
 
 		var length: Double { get }
@@ -30,18 +29,18 @@ public extension CGPath {
 			}
 		}
 
-		public var startPoint: CGPoint? {
+		public var _startPoint: CGPoint? {
 			switch self {
 			case .moveTo(let curve):
-				curve.startPoint
+				curve._startPoint
 			case .addLineTo(let curve):
-				curve.startPoint
+				curve._startPoint
 			case .addQuadCurveTo(let curve):
-				curve.startPoint
+				curve._startPoint
 			case .addCurveTo(let curve):
-				curve.startPoint
+				curve._startPoint
 			case .close(let curve):
-				curve.startPoint
+				curve._startPoint
 			}
 		}
 
