@@ -6,64 +6,6 @@ public extension CGPath.Segment {
 
 	var length: Double { curve.length }
 
-	private static func calculateQuadraticCurveLengthAdaptive(
-		start: CGPoint,
-		control: CGPoint,
-		end: CGPoint,
-		threshold: Double = 0.01
-	) -> Double {
-		var total = 0.0
-		var stack: [(start: CGPoint, control: CGPoint, end: CGPoint)] = [(start, control, end)]
-
-		while let (start, control, end) = stack.popLast() {
-			let netLength = start.distance(to: control) + control.distance(to: end)
-
-			if start.distance(to: end, is: netLength, slop: 0.01) {
-				total += netLength
-			} else {
-				let mid1 = start.interpolation(to: control, tValue: 0.5)
-				let mid2 = control.interpolation(to: end, tValue: 0.5)
-				let middle = mid1.interpolation(to: mid2, tValue: 0.5)
-
-				stack.append((start, mid1, middle))
-				stack.append((middle, mid2, end))
-			}
-		}
-		return total
-	}
-
-	private static func calculateCubicCurveLengthAdaptive(
-		start: CGPoint,
-		control1: CGPoint,
-		control2: CGPoint,
-		end: CGPoint,
-		threshold: Double = 0.01
-	) -> Double {
-		var total = 0.0
-		var stack: [(start: CGPoint, control1: CGPoint, control2: CGPoint, end: CGPoint)] = [(start, control1, control2, end)]
-
-		while let (start, control1, control2, end) = stack.popLast() {
-			let netLength = start.distance(to: control1) + control1.distance(to: control2) + control2.distance(to: end)
-
-			if start.distance(to: end, is: netLength, slop: 0.01) {
-				total += netLength
-			} else {
-				let mid1 = start.interpolation(to: control1, tValue: 0.5)
-				let mid2 = control1.interpolation(to: control2, tValue: 0.5)
-				let mid3 = control2.interpolation(to: end, tValue: 0.5)
-
-				let mid4 = mid1.interpolation(to: mid2, tValue: 0.5)
-				let mid5 = mid2.interpolation(to: mid3, tValue: 0.5)
-
-				let middle = mid4.interpolation(to: mid5, tValue: 0.5)
-
-				stack.append((start, mid1, mid4, middle))
-				stack.append((middle, mid5, mid3, end))
-			}
-		}
-		return total
-	}
-
 	/// Calculated by first calculating the total length, then iterating over divided segments until the current point
 	/// is `percent` length from the starting point. If this is being called repeatedly for the same curve, you may save
 	/// some calculation by provided a precalculated length value. However, providing an incorrect value is untested and
