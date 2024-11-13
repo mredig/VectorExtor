@@ -48,6 +48,7 @@ class CGPathExtensionsTests: XCTestCase {
 		return path
 	}
 
+	@available(*, deprecated)
 	func testPathElements() {
 		let path = generateBezierScribble()
 
@@ -106,6 +107,7 @@ class CGPathExtensionsTests: XCTestCase {
 		XCTAssertEqual(87.1521, path.length, accuracy: 0.00001)
 	}
 
+	@available(*, deprecated)
 	func testPointAlongCurve() {
 		let path = generateSimpleCurve()
 		let segment = path.sections.last!
@@ -180,18 +182,18 @@ class CGPathExtensionsTests: XCTestCase {
 		XCTAssertEqual(7.3275697425434085, length, accuracy: 0.00001)
 		let percentagePoints = stride(from: CGFloat(0.0), through: 1.0, by: 0.1).compactMap { path.pointAlongPath(atPercent: $0, precalculatedLength: length) }
 		let expectedPoints = [
-			(2.0, 5.0),
-			(2.265544902523698, 4.335119181391632),
-			(2.857953127107415, 3.911861477399667),
-			(3.5478578546712503, 3.668644905707304),
-			(4.268736823956322, 3.540368395330985),
-			(5.000000000000001, 3.5),
-			(5.7312631760436785, 3.540368395330985),
-			(6.452142145328748, 3.668644905707303),
-			(7.142046872892585, 3.911861477399666),
-			(7.734455097476303, 4.335119181391634),
-			(8.0, 5.0)
-		].map { CGPoint(x: $0.0, y: $0.1) }
+			CGPoint(x: 2.0, y: 5.0),
+			CGPoint(x: 2.265544902523698, y: 4.335119181391632),
+			CGPoint(x: 2.857953127107415, y: 3.911861477399667),
+			CGPoint(x: 3.5478578546712503, y: 3.668644905707304),
+			CGPoint(x: 4.268736823956322, y: 3.540368395330985),
+			CGPoint(x: 5.000000000000001, y: 3.5),
+			CGPoint(x: 5.7312631760436785, y: 3.540368395330985),
+			CGPoint(x: 6.452142145328748, y: 3.668644905707303),
+			CGPoint(x: 7.142046872892585, y: 3.911861477399666),
+			CGPoint(x: 7.734455097476303, y: 4.335119181391634),
+			CGPoint(x: 8.0, y: 5.0)
+		]
 		XCTAssertEqual(expectedPoints, percentagePoints)
 	}
 

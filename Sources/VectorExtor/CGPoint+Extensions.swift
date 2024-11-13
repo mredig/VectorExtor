@@ -128,7 +128,7 @@ public extension CGPoint {
 	}
 }
 
-extension CGPoint: Hashable {
+extension CGPoint: @retroactive Hashable {
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(x)
 		hasher.combine(y)

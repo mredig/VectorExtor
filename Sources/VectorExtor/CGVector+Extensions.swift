@@ -56,7 +56,7 @@ public extension CGVector {
 	}
 }
 
-extension CGVector: Hashable {
+extension CGVector: @retroactive Hashable {
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(dx)
 		hasher.combine(dy)
