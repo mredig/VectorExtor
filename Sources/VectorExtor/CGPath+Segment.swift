@@ -49,7 +49,7 @@ public extension CGPath.Segment {
 //
 //		return linearBezierPoint(t: straightPercentage, start: subPointStart, end: subPointEnd)
 //	}
-	struct QuadCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
+	struct QuadCurve: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
 		public var startPoint: CGPoint { _startPoint ?? .zero }
 		public let _startPoint: CGPoint?
 		public let controlPoint: CGPoint
@@ -96,7 +96,7 @@ public extension CGPath.Segment {
 		}
 	}
 
-	struct CubicCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
+	struct CubicCurve: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
 		public var startPoint: CGPoint { _startPoint ?? .zero }
 		public let _startPoint: CGPoint?
 		public let control1: CGPoint
@@ -150,7 +150,7 @@ public extension CGPath.Segment {
 		}
 	}
 
-	struct LineCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
+	struct LineSegment: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
 		public var startPoint: CGPoint { _startPoint ?? .zero }
 		public let _startPoint: CGPoint?
 		public let endPoint: CGPoint
@@ -163,7 +163,7 @@ public extension CGPath.Segment {
 		}
 	}
 
-	struct MoveCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
+	struct MoveSegment: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
 		public let _startPoint: CGPoint?
 		public let endPoint: CGPoint
 
@@ -175,7 +175,7 @@ public extension CGPath.Segment {
 		}
 	}
 
-	struct CloseCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
+	struct CloseSegment: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
 		public let _startPoint: CGPoint?
 		public let endPoint: CGPoint
 

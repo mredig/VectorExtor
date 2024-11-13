@@ -3,28 +3,28 @@ import CoreGraphics
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath {
-	protocol CurveProtocol {
+	protocol SegmentProtocol {
 		var _startPoint: CGPoint? { get }
 		var endPoint: CGPoint { get }
 
 		var length: Double { get }
 	}
 
-	enum Segment: CurveProtocol, Hashable, Codable, Sendable {
-		case moveTo(MoveCurve)
-		case addLineTo(LineCurve)
+	enum Segment: SegmentProtocol, Hashable, Codable, Sendable {
+		case moveTo(MoveSegment)
+		case addLineTo(LineSegment)
 		case addQuadCurveTo(QuadCurve)
 		case addCurveTo(CubicCurve)
-		case close(CloseCurve)
+		case close(CloseSegment)
 
 		public var length: Double {
 			switch self {
 			case
-					.addLineTo(let curve as CurveProtocol),
-					.addQuadCurveTo(let curve as CurveProtocol),
-					.addCurveTo(let curve as CurveProtocol),
-					.close(let curve as CurveProtocol),
-					.moveTo(let curve as CurveProtocol):
+					.addLineTo(let curve as SegmentProtocol),
+					.addQuadCurveTo(let curve as SegmentProtocol),
+					.addCurveTo(let curve as SegmentProtocol),
+					.close(let curve as SegmentProtocol),
+					.moveTo(let curve as SegmentProtocol):
 				curve.length
 			}
 		}
