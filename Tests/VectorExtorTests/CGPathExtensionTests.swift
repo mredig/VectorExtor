@@ -1,5 +1,9 @@
 import XCTest
+#if DEBUG
 @testable import VectorExtor
+#else
+import VectorExtor
+#endif
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 class CGPathExtensionsTests: XCTestCase {
@@ -48,6 +52,7 @@ class CGPathExtensionsTests: XCTestCase {
 		return path
 	}
 
+	#if DEBUG
 	@available(*, deprecated)
 	func testPathElements() {
 		let path = generateBezierScribble()
@@ -85,6 +90,7 @@ class CGPathExtensionsTests: XCTestCase {
 		XCTAssertEqual(section3.element, element3)
 		XCTAssertNil(section3.next)
 	}
+	#endif
 
 	func testSVGString() {
 		let path = generateBezierScribble()
