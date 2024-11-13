@@ -42,7 +42,7 @@ public extension BinaryFloatingPoint {
 
 
 	#if arch(arm64) // see Float16 docs
-	@available(macOS 11.0, iOS 14.0, *)
+	@available(macOS 11.0, iOS 14.0, tvOS 14.0, *)
 	var toFloat16: Float16 { Float16(self) }
 	#endif
 	var toFloat: Float { Float(self) }
