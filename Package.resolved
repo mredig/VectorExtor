@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "benchy",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mredig/Benchy.git",
+      "state" : {
+        "revision" : "2213412f987b30e6c2528dad8a16d08a44c257b3",
+        "version" : "0.1.1"
+      }
+    },
+    {
+      "identity" : "table",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jangorman/table.git",
+      "state" : {
+        "revision" : "7b8521c3b1078ba0b347964aec7c503cd6f1ff40",
+        "version" : "1.1.1"
+      }
+    }
+  ],
+  "version" : 2
+}
