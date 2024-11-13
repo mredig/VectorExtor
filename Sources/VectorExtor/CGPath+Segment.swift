@@ -4,8 +4,6 @@ import CoreGraphics
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath.Segment {
 
-	var length: Double { curve.length }
-
 	/// Calculated by first calculating the total length, then iterating over divided segments until the current point
 	/// is `percent` length from the starting point. If this is being called repeatedly for the same curve, you may save
 	/// some calculation by provided a precalculated length value. However, providing an incorrect value is untested and
@@ -51,7 +49,7 @@ public extension CGPath.Segment {
 //
 //		return linearBezierPoint(t: straightPercentage, start: subPointStart, end: subPointEnd)
 //	}
-	struct QuadCurve: CurveProtocol, Hashable, Codable, Sendable {
+	struct QuadCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
 		private var _startPoint: CGPoint { startPoint ?? .zero }
 		public let startPoint: CGPoint?
 		public let controlPoint: CGPoint
@@ -98,7 +96,7 @@ public extension CGPath.Segment {
 		}
 	}
 
-	struct CubicCurve: CurveProtocol, Hashable, Codable, Sendable {
+	struct CubicCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
 		private var _startPoint: CGPoint { startPoint ?? .zero }
 		public let startPoint: CGPoint?
 		public let control1: CGPoint
@@ -152,7 +150,7 @@ public extension CGPath.Segment {
 		}
 	}
 
-	struct LineCurve: CurveProtocol, Hashable, Codable, Sendable {
+	struct LineCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
 		internal var _startPoint: CGPoint { startPoint ?? .zero }
 		public let startPoint: CGPoint?
 		public let endPoint: CGPoint
@@ -165,7 +163,7 @@ public extension CGPath.Segment {
 		}
 	}
 
-	struct MoveCurve: CurveProtocol, Hashable, Codable, Sendable {
+	struct MoveCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
 		public let startPoint: CGPoint?
 		public let endPoint: CGPoint
 
@@ -177,7 +175,7 @@ public extension CGPath.Segment {
 		}
 	}
 
-	struct CloseCurve: CurveProtocol, Hashable, Codable, Sendable {
+	struct CloseCurve: CGPath.CurveProtocol, Hashable, Codable, Sendable {
 		public let startPoint: CGPoint?
 		public let endPoint: CGPoint
 
@@ -187,14 +185,6 @@ public extension CGPath.Segment {
 			self.startPoint = startPoint
 			self.endPoint = endPoint
 		}
-	}
-
-	protocol CurveProtocol {
-		// TODO: change to _
-		var startPoint: CGPoint? { get }
-		var endPoint: CGPoint { get }
-
-		var length: Double { get }
 	}
 }
 
