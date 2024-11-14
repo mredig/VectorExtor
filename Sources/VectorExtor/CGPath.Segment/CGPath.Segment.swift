@@ -51,8 +51,18 @@ public extension CGPath {
 			}
 		}
 
+		@inlinable
 		public func percentAlongCurve(_ percent: Double) -> CGPoint? {
-			curve.percentAlongCurve(percent)
+			switch self {
+			case .moveTo, .close:
+				nil
+			case .addLineTo(let curve):
+				curve.percentAlongCurve(percent)
+			case .addQuadCurveTo(let curve):
+				curve.percentAlongCurve(percent)
+			case .addCurveTo(let curve):
+				curve.percentAlongCurve(percent)
+			}
 		}
 	}
 }

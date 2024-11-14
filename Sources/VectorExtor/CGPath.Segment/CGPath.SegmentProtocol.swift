@@ -52,40 +52,4 @@ public extension CGPath.SegmentProtocol {
 		split(at: t).0.endPoint
 	}
 }
-
-extension CGPath {
-	protocol BezierSegmentProtocol: SegmentProtocol {}
-}
-
-extension CGPath.BezierSegmentProtocol {
-	public func percentAlongCurve(_ percent: Double) -> CGPoint? {
-		let percent = percent.clamped()
-		guard percent.isZero == false else { return _startPoint }
-		guard percent != 1 else { return endPoint }
-
-		let segmentLengths = lengths(ofSegmentCount: 10)
-		let totalLength = segmentLengths.map(\.length).reduce(0, +)
-		let goalLength = totalLength * percent
-
-		var accumulator: Double = 0
-
-		for (segment, length) in segmentLengths {
-			let combined = accumulator + length
-			guard combined > 0 else { return endPoint }
-			guard
-				combined._isRoughlyEqual(to: goalLength, usingThreshold: CGPath.Segment.lengthThreshold) == false
-			else { return segment.endPoint }
-
-			if combined > goalLength {
-				// hone in on this segment
-				let remaining = goalLength - accumulator
-				let childSegmentGoalPercent = remaining / length
-				return segment.percentAlongCurve(childSegmentGoalPercent)
-			} else {
-				accumulator = combined
-			}
-		}
-		return nil
-	}
-}
 #endif
