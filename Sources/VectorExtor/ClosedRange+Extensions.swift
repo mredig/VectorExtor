@@ -14,6 +14,7 @@ public extension ClosedRange where Bound: BinaryFloatingPoint {
 	}
 
 	/// In a range, the value of a given relative location between bounds. For example, in the range `20...40`, the point `0.5` would be `30`
+	@inline(__always)
 	func interpolated(at point: Bound, clamped: Bool = true) -> Bound {
 		let point = clamped ? Swift.max(0, Swift.min(1, point)) : point
 
@@ -30,6 +31,7 @@ public extension ClosedRange where Bound: BinaryFloatingPoint {
 	}
 
 	/// In a range, the relative location of a value between bounds. For example, if a range were `20...40`, the value `30` would be `0.5`
+	@inline(__always)
 	func linearPoint(of value: Bound, clamped: Bool = true) -> Bound {
 		let normalUpper = Bound(upperBound) - Bound(lowerBound)
 		let normalValue = Bound(value) - Bound(lowerBound)
@@ -38,6 +40,7 @@ public extension ClosedRange where Bound: BinaryFloatingPoint {
 }
 
 public extension ClosedRange where Bound: Numeric {
+	@inline(__always)
 	func offset(by value: Bound) -> Self {
 		let offsetUpper = upperBound + value
 		let offsetLower = lowerBound + value
