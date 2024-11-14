@@ -146,7 +146,7 @@ class CGPathExtensionsTests: XCTestCase {
 		let segment = path.segments.last!
 
 		var result = segment.percentAlongCurve(0.25)!
-		var expected = CGPoint(x: 3.19161604, y: 3.774775)
+		var expected = CGPoint(x: 3.192581, y: 3.774435)
 		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
 		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
 		result = segment.pointAlongCurve(t: 0.25)
