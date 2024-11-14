@@ -49,7 +49,7 @@ enum LengthCalculation: BenchyComparator {
 	}
 }
 
-enum PercentCalculation: BenchyComparator {
+enum PercentCalculationIterative: BenchyComparator {
 	static var benchmarks: [ChildBenchmark] = []
 	static var iterations: Int = 9999
 
@@ -60,6 +60,7 @@ enum PercentCalculation: BenchyComparator {
 		path.addLine(to: CGPoint(x: 44, y: 7))
 		path.addCurve(to: CGPoint(x: 66, y: 0), control1: CGPoint(x: 44, y: 7), control2: CGPoint(x: 68, y: 9))
 		path.addQuadCurve(to: CGPoint(x: 80, y: -7), control: CGPoint(x: 66, y: -7))
+		path.closeSubpath()
 
 		for segment in path.segments {
 			let label = segment.svgString.prefix(3)
@@ -81,6 +82,39 @@ enum PercentCalculation: BenchyComparator {
 			case .moveTo: label = "move"
 			}
 			ChildBenchmark(label: "Point at Percent Section - \(label) (old)") { i, label in
+				for i in 0...47 {
+					let t = Double(i) / 47.0
+					_ = section.pointAlongCurve(atPercent: t)
+				}
+			}
+		}
+	}
+}
+
+enum PercentCalculation: BenchyComparator {
+	static var benchmarks: [ChildBenchmark] = []
+	static var iterations: Int = 9999
+
+	static func setupBenchmarks() throws {
+		let path = CGMutablePath()
+
+		path.move(to: CGPoint(x: 0, y: 7))
+		path.addLine(to: CGPoint(x: 44, y: 7))
+		path.addCurve(to: CGPoint(x: 66, y: 0), control1: CGPoint(x: 44, y: 7), control2: CGPoint(x: 68, y: 9))
+		path.addQuadCurve(to: CGPoint(x: 80, y: -7), control: CGPoint(x: 66, y: -7))
+		path.closeSubpath()
+
+		ChildBenchmark(label: "Point at Percent Segment (new)") { i, label in
+			for segment in path.segments {
+				for i in 0...47 {
+					let t = Double(i) / 47.0
+					_ = segment.percentAlongCurve(t)
+				}
+			}
+		}
+
+		ChildBenchmark(label: "Point at Percent Section (old)") { i, label in
+			for section in path.sections {
 				for i in 0...47 {
 					let t = Double(i) / 47.0
 					_ = section.pointAlongCurve(atPercent: t)
