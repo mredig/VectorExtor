@@ -1,4 +1,4 @@
-#if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
+#if canImport(CoreGraphics)
 import CoreGraphics
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
@@ -161,6 +161,13 @@ public extension CGPath.Segment {
 			self._startPoint = startPoint
 			self.endPoint = endPoint
 		}
+
+		public func split(at t: Double) -> (LineSegment, LineSegment) {
+			let mid = startPoint.interpolation(to: endPoint, tValue: t, clamped: true)
+			let a = LineSegment(startPoint: _startPoint, endPoint: mid)
+			let b = LineSegment(startPoint: mid, endPoint: endPoint)
+			return (a, b)
+		}
 	}
 
 	struct MoveSegment: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
@@ -173,6 +180,13 @@ public extension CGPath.Segment {
 			self._startPoint = startPoint
 			self.endPoint = endPoint
 		}
+
+		public func split(at t: Double) -> (MoveSegment, MoveSegment) {
+			let mid = (_startPoint ?? .zero).interpolation(to: endPoint, tValue: t, clamped: true)
+			let a = MoveSegment(startPoint: _startPoint, endPoint: mid)
+			let b = MoveSegment(startPoint: mid, endPoint: endPoint)
+			return (a, b)
+		}
 	}
 
 	struct CloseSegment: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
@@ -184,6 +198,12 @@ public extension CGPath.Segment {
 		public init(startPoint: CGPoint? = nil, endPoint: CGPoint) {
 			self._startPoint = startPoint
 			self.endPoint = endPoint
+		}
+
+		public func split(at t: Double) -> (CloseSegment, CloseSegment) {
+			let a = CloseSegment(startPoint: _startPoint, endPoint: endPoint)
+			let b = CloseSegment(startPoint: endPoint, endPoint: endPoint)
+			return (a, b)
 		}
 	}
 }

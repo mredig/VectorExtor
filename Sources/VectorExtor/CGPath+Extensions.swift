@@ -3,13 +3,6 @@ import CoreGraphics
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath {
-	protocol SegmentProtocol {
-		var _startPoint: CGPoint? { get }
-		var endPoint: CGPoint { get }
-
-		var length: Double { get }
-	}
-
 	enum Segment: SegmentProtocol, Hashable, Codable, Sendable {
 		case moveTo(MoveSegment)
 		case addLineTo(LineSegment)
@@ -17,45 +10,47 @@ public extension CGPath {
 		case addCurveTo(CubicCurve)
 		case close(CloseSegment)
 
-		public var length: Double {
+		public var curve: SegmentProtocol {
 			switch self {
 			case
+					.moveTo(let curve as SegmentProtocol),
 					.addLineTo(let curve as SegmentProtocol),
 					.addQuadCurveTo(let curve as SegmentProtocol),
 					.addCurveTo(let curve as SegmentProtocol),
-					.close(let curve as SegmentProtocol),
-					.moveTo(let curve as SegmentProtocol):
-				curve.length
+					.close(let curve as SegmentProtocol):
+				curve
 			}
+		}
+
+		public var length: Double {
+			curve.length
 		}
 
 		public var _startPoint: CGPoint? {
-			switch self {
-			case .moveTo(let curve):
-				curve._startPoint
-			case .addLineTo(let curve):
-				curve._startPoint
-			case .addQuadCurveTo(let curve):
-				curve._startPoint
-			case .addCurveTo(let curve):
-				curve._startPoint
-			case .close(let curve):
-				curve._startPoint
-			}
+			curve._startPoint
 		}
 
 		public var endPoint: CGPoint {
+			curve.endPoint
+		}
+
+		public func split(at t: Double) -> (Segment, Segment) {
 			switch self {
-			case .moveTo(let curve):
-				curve.endPoint
-			case .addLineTo(let curve):
-				curve.endPoint
-			case .addQuadCurveTo(let curve):
-				curve.endPoint
-			case .addCurveTo(let curve):
-				curve.endPoint
-			case .close(let curve):
-				curve.endPoint
+			case .moveTo(let original):
+				let chunks = original.split(at: t)
+				return (.moveTo(chunks.0), .moveTo(chunks.1))
+			case .addLineTo(let original):
+				let chunks = original.split(at: t)
+				return (.addLineTo(chunks.0), .addLineTo(chunks.1))
+			case .addQuadCurveTo(let original):
+				let chunks = original.split(at: t)
+				return (.addQuadCurveTo(chunks.0), .addQuadCurveTo(chunks.1))
+			case .addCurveTo(let original):
+				let chunks = original.split(at: t)
+				return (.addCurveTo(chunks.0), .addCurveTo(chunks.1))
+			case .close(let original):
+				let chunks = original.split(at: t)
+				return (.close(chunks.0), .close(chunks.1))
 			}
 		}
 	}
