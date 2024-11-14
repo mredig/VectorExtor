@@ -2,7 +2,7 @@
 //In this extension, CGVector is the most important omission from Linux, so I've covered a basic reimplementation.
 
 import Foundation
-#if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
+#if canImport(CoreGraphics)
 import CoreGraphics
 #endif
 
