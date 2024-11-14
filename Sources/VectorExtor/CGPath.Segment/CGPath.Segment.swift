@@ -28,24 +28,27 @@ public extension CGPath {
 			}
 		}
 		@inline(__always)
-		public var svgString: String { curve.svgString }
+		public var svgString: String { accessCurveProperty(\.svgString) }
 		@inline(__always)
-		public var length: Double { curve.length }
+		public var length: Double { accessCurveProperty(\.length) }
 		@inline(__always)
-		public var _startPoint: CGPoint? { curve._startPoint }
+		public var _startPoint: CGPoint? { accessCurveProperty(\._startPoint) }
 		@inline(__always)
-		public var endPoint: CGPoint {
+		public var endPoint: CGPoint { accessCurveProperty(\.endPoint) }
+
+		@inline(__always)
+		private func accessCurveProperty<T>(_ keypath: KeyPath<SegmentProtocol, T>) -> T {
 			switch self {
 			case .moveTo(let curve):
-				curve.endPoint
+				curve[keyPath: keypath]
 			case .addLineTo(let curve):
-				curve.endPoint
+				curve[keyPath: keypath]
 			case .addQuadCurveTo(let curve):
-				curve.endPoint
+				curve[keyPath: keypath]
 			case .addCurveTo(let curve):
-				curve.endPoint
+				curve[keyPath: keypath]
 			case .close(let curve):
-				curve.endPoint
+				curve[keyPath: keypath]
 			}
 		}
 
