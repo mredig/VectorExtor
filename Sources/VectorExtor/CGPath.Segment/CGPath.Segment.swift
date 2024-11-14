@@ -34,7 +34,20 @@ public extension CGPath {
 		@inline(__always)
 		public var _startPoint: CGPoint? { curve._startPoint }
 		@inline(__always)
-		public var endPoint: CGPoint { curve.endPoint }
+		public var endPoint: CGPoint {
+			switch self {
+			case .moveTo(let curve):
+				curve.endPoint
+			case .addLineTo(let curve):
+				curve.endPoint
+			case .addQuadCurveTo(let curve):
+				curve.endPoint
+			case .addCurveTo(let curve):
+				curve.endPoint
+			case .close(let curve):
+				curve.endPoint
+			}
+		}
 
 		@inline(__always)
 		public func split(at t: Double) -> (Segment, Segment) {
