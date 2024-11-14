@@ -18,7 +18,7 @@ public extension CGPath {
 }
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
-extension CGPath.SegmentProtocol {
+public extension CGPath.SegmentProtocol {
 	func split(intoSegments segmentCount: Int) -> [Self] {
 		guard Self.isSplitable, segmentCount > 0 else { return [self] }
 
