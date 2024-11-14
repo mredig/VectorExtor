@@ -24,7 +24,7 @@ public extension CGPath.Segment {
 		}
 
 		public func calculateCubicCurveLengthAdaptive(
-			threshold: Double = 0.01
+			threshold: Double = CGPath.Segment.lengthThreshold
 		) -> Double {
 			var total = 0.0
 			var stack: [CubicCurve] = [self]
@@ -33,7 +33,7 @@ public extension CGPath.Segment {
 				let (start, control1, control2, end) = (curve.startPoint, curve.control1, curve.control2, curve.endPoint)
 				let netLength = start.distance(to: control1) + control1.distance(to: control2) + control2.distance(to: end)
 
-				if start.distance(to: end, is: netLength, slop: 0.01) {
+				if start.distance(to: end, is: netLength, slop: threshold) {
 					total += netLength
 				} else {
 					let (a, b) = curve.split(at: 0.5)

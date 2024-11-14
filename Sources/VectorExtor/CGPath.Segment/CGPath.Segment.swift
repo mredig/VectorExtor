@@ -4,7 +4,11 @@ import CoreGraphics
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath {
 	enum Segment: SegmentProtocol, Hashable, Codable, Sendable {
+		/// Adjusts the adaptive resolution algorithm threshold used when calculating curve length.
+		/// Smaller values are more accurate, but more computationally expensive. Defaults to `0.01`
+		public static var lengthThreshold: Double = 0.01
 		public static var isSplitable: Bool { true }
+
 		case moveTo(MoveSegment)
 		case addLineTo(LineSegment)
 		case addQuadCurveTo(QuadCurve)
@@ -51,7 +55,6 @@ public extension CGPath {
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath.Segment {
-
 	/// Calculated by first calculating the total length, then iterating over divided segments until the current point
 	/// is `percent` length from the starting point. If this is being called repeatedly for the same curve, you may save
 	/// some calculation by provided a precalculated length value. However, providing an incorrect value is untested and

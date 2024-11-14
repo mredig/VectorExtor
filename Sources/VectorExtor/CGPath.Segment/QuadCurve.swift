@@ -20,7 +20,7 @@ public extension CGPath.Segment {
 		}
 
 		public func calculateQuadraticCurveLengthAdaptive(
-			threshold: Double = 0.01
+			threshold: Double = CGPath.Segment.lengthThreshold
 		) -> Double {
 			var total = 0.0
 			var stack: [QuadCurve] = [self]
@@ -29,7 +29,7 @@ public extension CGPath.Segment {
 				let (start, control, end) = (curve.startPoint, curve.controlPoint, curve.endPoint)
 				let netLength = start.distance(to: control) + control.distance(to: end)
 
-				if start.distance(to: end, is: netLength, slop: 0.01) {
+				if start.distance(to: end, is: netLength, slop: threshold) {
 					total += netLength
 				} else {
 					let (a, b) = curve.split(at: 0.5)
