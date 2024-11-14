@@ -15,6 +15,7 @@ public extension CGPath {
 		case addCurveTo(CubicCurve)
 		case close(CloseSegment)
 
+		@inline(__always)
 		public var curve: SegmentProtocol {
 			switch self {
 			case
@@ -26,11 +27,16 @@ public extension CGPath {
 				curve
 			}
 		}
+		@inline(__always)
 		public var svgString: String { curve.svgString }
+		@inline(__always)
 		public var length: Double { curve.length }
+		@inline(__always)
 		public var _startPoint: CGPoint? { curve._startPoint }
+		@inline(__always)
 		public var endPoint: CGPoint { curve.endPoint }
 
+		@inline(__always)
 		public func split(at t: Double) -> (Segment, Segment) {
 			switch self {
 			case .moveTo(let original):
@@ -51,7 +57,7 @@ public extension CGPath {
 			}
 		}
 
-		@inlinable
+		@inline(__always)
 		public func percentAlongCurve(_ percent: Double) -> CGPoint? {
 			switch self {
 			case .moveTo, .close:
@@ -118,6 +124,7 @@ public extension CGPath.Segment {
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 extension Array where Element == CGPath.Segment {
+	@inline(__always)
 	public var length: Double { reduce(0) { $0 + $1.length } }
 }
 

@@ -5,17 +5,23 @@ import CoreGraphics
 public extension CGPath.Segment {
 	struct MoveSegment: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
 		public static var isSplitable: Bool { false }
+		@inline(__always)
 		public let _startPoint: CGPoint?
+		@inline(__always)
 		public let endPoint: CGPoint
 
+		@inline(__always)
 		public var length: Double { 0 }
+		@inline(__always)
 		public var svgString: String { "M\(endPoint.x),\(endPoint.y)" }
 
+		@inline(__always)
 		public init(startPoint: CGPoint? = nil, endPoint: CGPoint) {
 			self._startPoint = startPoint
 			self.endPoint = endPoint
 		}
 
+		@inline(__always)
 		public func split(at t: Double) -> (MoveSegment, MoveSegment) {
 			let mid = (_startPoint ?? .zero).interpolation(to: endPoint, tValue: t, clamped: true)
 			let a = MoveSegment(startPoint: _startPoint, endPoint: mid)
@@ -23,6 +29,7 @@ public extension CGPath.Segment {
 			return (a, b)
 		}
 
+		@inline(__always)
 		public func percentAlongCurve(_ percent: Double) -> CGPoint? { nil }
 	}
 }

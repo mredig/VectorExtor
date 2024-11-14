@@ -5,20 +5,28 @@ import CoreGraphics
 public extension CGPath.Segment {
 	struct QuadCurve: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
 		public static var isSplitable: Bool { true }
+		@inline(__always)
 		public var startPoint: CGPoint { _startPoint ?? .zero }
+		@inline(__always)
 		public let _startPoint: CGPoint?
+		@inline(__always)
 		public let controlPoint: CGPoint
+		@inline(__always)
 		public let endPoint: CGPoint
 
+		@inline(__always)
 		public var length: Double { calculateQuadraticCurveLengthAdaptive() }
+		@inline(__always)
 		public var svgString: String { "Q\(controlPoint.x),\(controlPoint.y) \(endPoint.x),\(endPoint.y)" }
 
+		@inline(__always)
 		public init(startPoint: CGPoint?, controlPoint: CGPoint, endPoint: CGPoint) {
 			self._startPoint = startPoint
 			self.controlPoint = controlPoint
 			self.endPoint = endPoint
 		}
 
+		@inline(__always)
 		public func calculateQuadraticCurveLengthAdaptive(
 			threshold: Double = CGPath.Segment.lengthThreshold
 		) -> Double {
@@ -41,6 +49,7 @@ public extension CGPath.Segment {
 			return total
 		}
 
+		@inline(__always)
 		public func split(at t: Double) -> (QuadCurve, QuadCurve) {
 			let t = t.clamped()
 			let mid1 = startPoint.interpolation(to: controlPoint, tValue: t)
@@ -53,6 +62,7 @@ public extension CGPath.Segment {
 		}
 
 		// exact same code as `CubicCurve.percentAlongCurve` - duplicated for better performance
+		@inline(__always)
 		public func percentAlongCurve(_ percent: Double) -> CGPoint? {
 			let percent = percent.clamped()
 			guard percent.isZero == false else { return _startPoint }

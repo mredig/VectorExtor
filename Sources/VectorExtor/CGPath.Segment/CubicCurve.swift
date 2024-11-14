@@ -4,18 +4,27 @@ import CoreGraphics
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath.Segment {
 	struct CubicCurve: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
+		@inline(__always)
 		public static var isSplitable: Bool { true }
+		@inline(__always)
 		public var startPoint: CGPoint { _startPoint ?? .zero }
+		@inline(__always)
 		public let _startPoint: CGPoint?
+		@inline(__always)
 		public let control1: CGPoint
+		@inline(__always)
 		public let control2: CGPoint
+		@inline(__always)
 		public let endPoint: CGPoint
 
+		@inline(__always)
 		public var length: Double { calculateCubicCurveLengthAdaptive() }
+		@inline(__always)
 		public var svgString: String {
 			"C\(control1.x),\(control1.y) \(control2.x),\(control2.y) \(endPoint.x),\(endPoint.y)"
 		}
 
+		@inline(__always)
 		public init(startPoint: CGPoint?, control1: CGPoint, control2: CGPoint, endPoint: CGPoint) {
 			self._startPoint = startPoint
 			self.control1 = control1
@@ -23,6 +32,7 @@ public extension CGPath.Segment {
 			self.endPoint = endPoint
 		}
 
+		@inline(__always)
 		public func calculateCubicCurveLengthAdaptive(
 			threshold: Double = CGPath.Segment.lengthThreshold
 		) -> Double {
@@ -44,6 +54,7 @@ public extension CGPath.Segment {
 			return total
 		}
 
+		@inline(__always)
 		public func split(at t: Double) -> (CubicCurve, CubicCurve) {
 			let t = t.clamped()
 			let mid1 = startPoint.interpolation(to: control1, tValue: t)
@@ -61,6 +72,7 @@ public extension CGPath.Segment {
 		}
 
 		// exact same code as `QuadCurve.percentAlongCurve` - duplicated for better performance
+		@inline(__always)
 		public func percentAlongCurve(_ percent: Double) -> CGPoint? {
 			let percent = percent.clamped()
 			guard percent.isZero == false else { return _startPoint }
