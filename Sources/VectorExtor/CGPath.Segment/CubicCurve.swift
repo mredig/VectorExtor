@@ -3,7 +3,7 @@ import CoreGraphics
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath.Segment {
-	struct CubicCurve: CGPath.SegmentProtocol, CGPath.BezierSegmentProtocol, Hashable, Codable, Sendable {
+	struct CubicCurve: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
 		public static var isSplitable: Bool { true }
 		public var startPoint: CGPoint { _startPoint ?? .zero }
 		public let _startPoint: CGPoint?
@@ -58,6 +58,37 @@ public extension CGPath.Segment {
 			let a = CubicCurve(startPoint: startPoint, control1: mid1, control2: mid4, endPoint: middle)
 			let b = CubicCurve(startPoint: middle, control1: mid5, control2: mid3, endPoint: endPoint)
 			return (a, b)
+		}
+
+		// exact same code as `QuadCurve.percentAlongCurve` - duplicated for better performance
+		public func percentAlongCurve(_ percent: Double) -> CGPoint? {
+			let percent = percent.clamped()
+			guard percent.isZero == false else { return _startPoint }
+			guard percent != 1 else { return endPoint }
+
+			let segmentLengths = lengths(ofSegmentCount: 10)
+			let totalLength = segmentLengths.map(\.length).reduce(0, +)
+			let goalLength = totalLength * percent
+
+			var accumulator: Double = 0
+
+			for (segment, length) in segmentLengths {
+				let combined = accumulator + length
+				guard combined > 0 else { return endPoint }
+				guard
+					combined._isRoughlyEqual(to: goalLength, usingThreshold: CGPath.Segment.lengthThreshold) == false
+				else { return segment.endPoint }
+
+				if combined > goalLength {
+					// hone in on this segment
+					let remaining = goalLength - accumulator
+					let childSegmentGoalPercent = remaining / length
+					return segment.percentAlongCurve(childSegmentGoalPercent)
+				} else {
+					accumulator = combined
+				}
+			}
+			return nil
 		}
 	}
 }
