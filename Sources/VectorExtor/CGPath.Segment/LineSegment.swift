@@ -23,6 +23,10 @@ public extension CGPath.Segment {
 			let b = LineSegment(startPoint: mid, endPoint: endPoint)
 			return (a, b)
 		}
+
+		public func percentAlongCurve(_ percent: Double) -> CGPoint? {
+			startPoint.interpolation(to: endPoint, tValue: percent, clamped: true)
+		}
 	}
 }
 #endif

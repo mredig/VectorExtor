@@ -21,6 +21,8 @@ public extension CGPath.Segment {
 			let b = CloseSegment(startPoint: endPoint, endPoint: endPoint)
 			return (a, b)
 		}
+
+		public func percentAlongCurve(_ percent: Double) -> CGPoint? { nil }
 	}
 }
 #endif

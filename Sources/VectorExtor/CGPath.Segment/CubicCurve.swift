@@ -3,7 +3,7 @@ import CoreGraphics
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath.Segment {
-	struct CubicCurve: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
+	struct CubicCurve: CGPath.SegmentProtocol, CGPath.BezierSegmentProtocol, Hashable, Codable, Sendable {
 		public static var isSplitable: Bool { true }
 		public var startPoint: CGPoint { _startPoint ?? .zero }
 		public let _startPoint: CGPoint?

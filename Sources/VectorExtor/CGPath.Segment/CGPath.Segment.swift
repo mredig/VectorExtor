@@ -50,6 +50,10 @@ public extension CGPath {
 				return (.close(chunks.0), .close(chunks.1))
 			}
 		}
+
+		public func percentAlongCurve(_ percent: Double) -> CGPoint? {
+			curve.percentAlongCurve(percent)
+		}
 	}
 }
 

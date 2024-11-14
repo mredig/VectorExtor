@@ -3,7 +3,7 @@ import CoreGraphics
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath.Segment {
-	struct QuadCurve: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
+	struct QuadCurve: CGPath.SegmentProtocol, CGPath.BezierSegmentProtocol, Hashable, Codable, Sendable {
 		public static var isSplitable: Bool { true }
 		public var startPoint: CGPoint { _startPoint ?? .zero }
 		public let _startPoint: CGPoint?
@@ -42,6 +42,7 @@ public extension CGPath.Segment {
 		}
 
 		public func split(at t: Double) -> (QuadCurve, QuadCurve) {
+			let t = t.clamped()
 			let mid1 = startPoint.interpolation(to: controlPoint, tValue: t)
 			let mid2 = controlPoint.interpolation(to: endPoint, tValue: t)
 			let middle = mid1.interpolation(to: mid2, tValue: t)
