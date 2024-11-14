@@ -21,20 +21,10 @@ public extension CGPath {
 				curve
 			}
 		}
-
 		public var svgString: String { curve.svgString }
-
-		public var length: Double {
-			curve.length
-		}
-
-		public var _startPoint: CGPoint? {
-			curve._startPoint
-		}
-
-		public var endPoint: CGPoint {
-			curve.endPoint
-		}
+		public var length: Double { curve.length }
+		public var _startPoint: CGPoint? { curve._startPoint }
+		public var endPoint: CGPoint { curve.endPoint }
 
 		public func split(at t: Double) -> (Segment, Segment) {
 			switch self {
