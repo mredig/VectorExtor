@@ -8,8 +8,8 @@ struct Bench {
 	static func main() async throws {
 		var benchy = Benchy()
 //		try benchy.addBenchyTest(LengthCalculation.self)
-		try benchy.addBenchyTest(PercentCalculation.self)
-//		try benchy.addBenchyTest(TPointCalculation.self)
+//		try benchy.addBenchyTest(PercentCalculation.self)
+		try benchy.addBenchyTest(TPointCalculation.self)
 
 		try benchy.runBenchmarks()
 
