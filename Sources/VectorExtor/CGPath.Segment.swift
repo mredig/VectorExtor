@@ -2,6 +2,63 @@
 import CoreGraphics
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+public extension CGPath {
+	enum Segment: SegmentProtocol, Hashable, Codable, Sendable {
+		case moveTo(MoveSegment)
+		case addLineTo(LineSegment)
+		case addQuadCurveTo(QuadCurve)
+		case addCurveTo(CubicCurve)
+		case close(CloseSegment)
+
+		public var curve: SegmentProtocol {
+			switch self {
+			case
+					.moveTo(let curve as SegmentProtocol),
+					.addLineTo(let curve as SegmentProtocol),
+					.addQuadCurveTo(let curve as SegmentProtocol),
+					.addCurveTo(let curve as SegmentProtocol),
+					.close(let curve as SegmentProtocol):
+				curve
+			}
+		}
+
+		public var svgString: String { curve.svgString }
+
+		public var length: Double {
+			curve.length
+		}
+
+		public var _startPoint: CGPoint? {
+			curve._startPoint
+		}
+
+		public var endPoint: CGPoint {
+			curve.endPoint
+		}
+
+		public func split(at t: Double) -> (Segment, Segment) {
+			switch self {
+			case .moveTo(let original):
+				let chunks = original.split(at: t)
+				return (.moveTo(chunks.0), .moveTo(chunks.1))
+			case .addLineTo(let original):
+				let chunks = original.split(at: t)
+				return (.addLineTo(chunks.0), .addLineTo(chunks.1))
+			case .addQuadCurveTo(let original):
+				let chunks = original.split(at: t)
+				return (.addQuadCurveTo(chunks.0), .addQuadCurveTo(chunks.1))
+			case .addCurveTo(let original):
+				let chunks = original.split(at: t)
+				return (.addCurveTo(chunks.0), .addCurveTo(chunks.1))
+			case .close(let original):
+				let chunks = original.split(at: t)
+				return (.close(chunks.0), .close(chunks.1))
+			}
+		}
+	}
+}
+
+@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath.Segment {
 
 	/// Calculated by first calculating the total length, then iterating over divided segments until the current point
@@ -56,6 +113,7 @@ public extension CGPath.Segment {
 		public let endPoint: CGPoint
 
 		public var length: Double { calculateQuadraticCurveLengthAdaptive() }
+		public var svgString: String { "Q\(controlPoint.x),\(controlPoint.y) \(endPoint.x),\(endPoint.y)" }
 
 		public init(startPoint: CGPoint?, controlPoint: CGPoint, endPoint: CGPoint) {
 			self._startPoint = startPoint
@@ -104,6 +162,9 @@ public extension CGPath.Segment {
 		public let endPoint: CGPoint
 
 		public var length: Double { calculateCubicCurveLengthAdaptive() }
+		public var svgString: String {
+			"C\(control1.x),\(control1.y) \(control2.x),\(control2.y) \(endPoint.x),\(endPoint.y)"
+		}
 
 		public init(startPoint: CGPoint?, control1: CGPoint, control2: CGPoint, endPoint: CGPoint) {
 			self._startPoint = startPoint
@@ -156,6 +217,7 @@ public extension CGPath.Segment {
 		public let endPoint: CGPoint
 
 		public var length: Double { startPoint.distance(to: endPoint) }
+		public var svgString: String { "L\(endPoint.x),\(endPoint.y)" }
 
 		public init(startPoint: CGPoint?, endPoint: CGPoint) {
 			self._startPoint = startPoint
@@ -175,6 +237,7 @@ public extension CGPath.Segment {
 		public let endPoint: CGPoint
 
 		public var length: Double { 0 }
+		public var svgString: String { "M\(endPoint.x),\(endPoint.y)" }
 
 		public init(startPoint: CGPoint? = nil, endPoint: CGPoint) {
 			self._startPoint = startPoint
@@ -194,6 +257,7 @@ public extension CGPath.Segment {
 		public let endPoint: CGPoint
 
 		public var length: Double { 0 }
+		public var svgString: String { "z" }
 
 		public init(startPoint: CGPoint? = nil, endPoint: CGPoint) {
 			self._startPoint = startPoint

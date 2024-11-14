@@ -9,6 +9,8 @@ public extension CGPath {
 
 		var length: Double { get }
 
+		var svgString: String { get }
+
 		func split(at t: Double) -> (Self, Self)
 	}
 }
