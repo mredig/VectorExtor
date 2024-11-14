@@ -58,7 +58,7 @@ public extension CGPath.Segment {
 			guard percent.isZero == false else { return _startPoint }
 			guard percent != 1 else { return endPoint }
 
-			let segmentLengths = lengths(ofSegmentCount: 10)
+			let segmentLengths = lengths(ofSegmentCount: 4)
 			let totalLength = segmentLengths.map(\.length).reduce(0, +)
 			let goalLength = totalLength * percent
 
