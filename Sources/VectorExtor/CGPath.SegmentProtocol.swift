@@ -10,6 +10,7 @@ public extension CGPath {
 		var length: Double { get }
 
 		var svgString: String { get }
+		static var isSplitable: Bool { get }
 
 		func split(at t: Double) -> (Self, Self)
 	}
@@ -18,7 +19,7 @@ public extension CGPath {
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 extension CGPath.SegmentProtocol {
 	func split(intoSegments segmentCount: Int) -> [Self] {
-		guard segmentCount > 0 else { return [self] }
+		guard Self.isSplitable, segmentCount > 0 else { return [self] }
 
 		let doubleCount = Double(segmentCount + 1)
 		let chunkTSize = 1.0 / doubleCount

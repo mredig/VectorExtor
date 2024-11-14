@@ -4,6 +4,7 @@ import CoreGraphics
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath {
 	enum Segment: SegmentProtocol, Hashable, Codable, Sendable {
+		public static var isSplitable: Bool { true }
 		case moveTo(MoveSegment)
 		case addLineTo(LineSegment)
 		case addQuadCurveTo(QuadCurve)
@@ -97,6 +98,7 @@ public extension CGPath.Segment {
 //		return linearBezierPoint(t: straightPercentage, start: subPointStart, end: subPointEnd)
 //	}
 	struct QuadCurve: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
+		public static var isSplitable: Bool { true }
 		public var startPoint: CGPoint { _startPoint ?? .zero }
 		public let _startPoint: CGPoint?
 		public let controlPoint: CGPoint
@@ -145,6 +147,7 @@ public extension CGPath.Segment {
 	}
 
 	struct CubicCurve: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
+		public static var isSplitable: Bool { true }
 		public var startPoint: CGPoint { _startPoint ?? .zero }
 		public let _startPoint: CGPoint?
 		public let control1: CGPoint
@@ -202,6 +205,7 @@ public extension CGPath.Segment {
 	}
 
 	struct LineSegment: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
+		public static var isSplitable: Bool { true }
 		public var startPoint: CGPoint { _startPoint ?? .zero }
 		public let _startPoint: CGPoint?
 		public let endPoint: CGPoint
@@ -223,6 +227,7 @@ public extension CGPath.Segment {
 	}
 
 	struct MoveSegment: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
+		public static var isSplitable: Bool { false }
 		public let _startPoint: CGPoint?
 		public let endPoint: CGPoint
 
@@ -243,6 +248,7 @@ public extension CGPath.Segment {
 	}
 
 	struct CloseSegment: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
+		public static var isSplitable: Bool { false }
 		public let _startPoint: CGPoint?
 		public let endPoint: CGPoint
 
