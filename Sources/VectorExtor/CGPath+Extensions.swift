@@ -57,23 +57,38 @@ public extension CGPath {
 		segments.map(\.svgString).joined(separator: " ")
 	}
 
-	func pointAlongPath(atPercent percent: CGFloat, precalculatedLength: CGFloat? = nil) -> CGPoint? {
-//		let subpaths = sections
-//		let percent = percent.clamped()
-//		let length = precalculatedLength ?? self.length
-//		let desiredLength = length * percent
-//
-//		var currentLength: CGFloat = 0
-//
-//		for subpath in subpaths {
-//			let thisSubLength = subpath.length
-//			currentLength += thisSubLength
-//			if currentLength >= desiredLength {
-//				let remaining = desiredLength - (currentLength - thisSubLength)
-//				let straightPercentage = thisSubLength != 0 ? remaining / thisSubLength : 0
-//				return subpath.pointAlongCurve(atPercent: straightPercentage)
-//			}
-//		}
+	private func segmentLengths() -> [(segment: Segment, length: Double)] {
+		let segments = segments
+
+		return segments.reduce(into: [], {
+			$0.append(($1, $1.length))
+		})
+	}
+
+	func pointAlongPath(atPercent percent: Double, precalculatedLength: Double? = nil) -> CGPoint? {
+		let subpaths = segmentLengths()
+		let percent = percent.clamped()
+		let length = precalculatedLength ?? subpaths.map(\.length).reduce(0, +)
+		let goalLength = length * percent
+
+		var accumulatedLength: Double = 0
+
+		for subpath in subpaths {
+			let combined = accumulatedLength + subpath.length
+
+			guard combined != goalLength else {
+				return subpath.segment.endPoint
+			}
+
+			if combined > goalLength {
+				let remaining = goalLength - accumulatedLength
+				let segmentPercent = remaining / subpath.length
+				return subpath.segment.percentAlongCurve(segmentPercent)
+			} else {
+				accumulatedLength = combined
+				continue
+			}
+		}
 		
 		return nil
 	}
