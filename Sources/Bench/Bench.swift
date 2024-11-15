@@ -7,13 +7,21 @@ import CoreGraphics
 struct Bench {
 	static func main() async throws {
 		var benchy = Benchy()
-//		try benchy.addBenchyTest(LengthCalculation.self)
-//		try benchy.addBenchyTest(PercentCalculation.self)
-		try benchy.addBenchyTest(TPointCalculation.self)
-
+		try benchy.addBenchyTest(LengthCalculation.self)
 		try benchy.runBenchmarks()
+		benchy.displayResults(decimalCount: 15, cleanup: true)
 
-		benchy.displayResults(decimalCount: 10)
+		try benchy.addBenchyTest(TPointCalculation.self)
+		try benchy.runBenchmarks()
+		benchy.displayResults(decimalCount: 15, cleanup: true)
+
+		try benchy.addBenchyTest(PercentCalculation.self)
+		try benchy.runBenchmarks()
+		benchy.displayResults(decimalCount: 15, cleanup: true)
+
+		try benchy.addBenchyTest(PercentCalculationPath.self)
+		try benchy.runBenchmarks()
+		benchy.displayResults(decimalCount: 15, cleanup: true)
 	}
 }
 
@@ -119,6 +127,37 @@ enum PercentCalculation: BenchyComparator {
 					let t = Double(i) / 47.0
 					_ = section.pointAlongCurve(atPercent: t)
 				}
+			}
+		}
+	}
+}
+
+enum PercentCalculationPath: BenchyComparator {
+	static var benchmarks: [ChildBenchmark] = []
+	static var iterations: Int = 9999
+
+	static func setupBenchmarks() throws {
+		let pathBuilder = CGMutablePath()
+
+		pathBuilder.move(to: CGPoint(x: 0, y: 7))
+		pathBuilder.addLine(to: CGPoint(x: 44, y: 7))
+		pathBuilder.addCurve(to: CGPoint(x: 66, y: 0), control1: CGPoint(x: 44, y: 7), control2: CGPoint(x: 68, y: 9))
+		pathBuilder.addQuadCurve(to: CGPoint(x: 80, y: -7), control: CGPoint(x: 66, y: -7))
+		pathBuilder.closeSubpath()
+
+		let path = pathBuilder.copy()!
+
+		ChildBenchmark(label: "Point at Percent Segment (new)") { i, label in
+			for i in 0...47 {
+				let t = Double(i) / 47.0
+				_ = path.percentAlongPath(t)
+			}
+		}
+
+		ChildBenchmark(label: "Point at Percent Section (old)") { i, label in
+			for i in 0...47 {
+				let t = Double(i) / 47.0
+				_ = path.pointAlongPath(atPercent: t)
 			}
 		}
 	}
