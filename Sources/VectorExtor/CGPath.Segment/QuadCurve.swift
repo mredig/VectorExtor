@@ -4,18 +4,25 @@ import CoreGraphics
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath.Segment {
 	struct QuadCurve: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
+		/// See entry in `CGPath.SegmentProtocol`
 		public static var isSplitable: Bool { true }
+		/// See entry in `CGPath.SegmentProtocol`
 		@inline(__always)
 		public var startPoint: CGPoint { _startPoint ?? .zero }
+		/// See entry in `CGPath.SegmentProtocol`
 		@inline(__always)
 		public let _startPoint: CGPoint?
+		/// See entry in `CGPath.SegmentProtocol`
 		@inline(__always)
 		public let controlPoint: CGPoint
+		/// See entry in `CGPath.SegmentProtocol`
 		@inline(__always)
 		public let endPoint: CGPoint
-
+		
+		/// See entry in `CGPath.SegmentProtocol`
 		@inline(__always)
 		public var length: Double { calculateQuadraticCurveLengthAdaptive() }
+		/// See entry in `CGPath.SegmentProtocol`
 		@inline(__always)
 		public var svgString: String { "Q\(controlPoint.x),\(controlPoint.y) \(endPoint.x),\(endPoint.y)" }
 
@@ -49,6 +56,7 @@ public extension CGPath.Segment {
 			return total
 		}
 
+		/// See entry in `CGPath.SegmentProtocol`
 		@inline(__always)
 		public func split(at t: Double) -> (QuadCurve, QuadCurve) {
 			let t = t.clamped()

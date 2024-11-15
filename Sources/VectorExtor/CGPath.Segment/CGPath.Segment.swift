@@ -3,10 +3,13 @@ import CoreGraphics
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath {
+	/// Correlates to CGPathElement/CGPathElementType, but in a more managable form.
+	/// Provides measurement (`length`), easy svg conversion, and some convenience functions.
 	enum Segment: SegmentProtocol, Hashable, Codable, Sendable {
 		/// Adjusts the adaptive resolution algorithm threshold used when calculating curve length.
 		/// Smaller values are more accurate, but more computationally expensive. Defaults to `0.01`
 		public static var lengthThreshold: Double = 0.01
+		/// Indicates whether you can split this type into smaller segments.
 		public static var isSplitable: Bool { true }
 
 		case moveTo(MoveSegment)
@@ -15,6 +18,8 @@ public extension CGPath {
 		case addCurveTo(CubicCurve)
 		case close(CloseSegment)
 
+		/// Generic protocol access to the underlying curve. This is convenient, but
+		/// performantly slower than switching over the possilbe cases.
 		@inline(__always)
 		public var curve: SegmentProtocol {
 			switch self {
@@ -27,15 +32,21 @@ public extension CGPath {
 				curve
 			}
 		}
+		/// An svg format string of this individual component.
 		@inline(__always)
 		public var svgString: String { accessCurveProperty(\.svgString) }
+		/// A measurement of the segment. This value is recalculated every time it's accessed.
 		@inline(__always)
 		public var length: Double { accessCurveProperty(\.length) }
+		/// The location of the starting point. Can be `nil`. Using `startPoint` on most implementers will default
+		/// to `.zero`, but if used in a sequence, it would usually be the previous item's `endPoint`
 		@inline(__always)
 		public var _startPoint: CGPoint? { accessCurveProperty(\._startPoint) }
+		/// The location of the ending point
 		@inline(__always)
 		public var endPoint: CGPoint { accessCurveProperty(\.endPoint) }
 
+		/// Consolidated, yet performant protocol access for properties
 		@inline(__always)
 		private func accessCurveProperty<T>(_ keypath: KeyPath<SegmentProtocol, T>) -> T {
 			switch self {
@@ -52,6 +63,8 @@ public extension CGPath {
 			}
 		}
 
+		/// When the type's `isSplitable` is `true`, it will subdivide the
+		/// segment into two parts, divided at the `t` offset. Valid `t` values are `0.0...1.0`.
 		@inline(__always)
 		public func split(at t: Double) -> (Segment, Segment) {
 			switch self {
@@ -73,6 +86,8 @@ public extension CGPath {
 			}
 		}
 
+		/// Searches for the location that is `percent` distance along the `length` of
+		/// the curve. Valid `percent` values are `0.0...1.0`
 		@inline(__always)
 		public func percentAlongCurve(_ percent: Double) -> CGPoint? {
 			switch self {
@@ -90,56 +105,8 @@ public extension CGPath {
 }
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
-public extension CGPath.Segment {
-	/// Calculated by first calculating the total length, then iterating over divided segments until the current point
-	/// is `percent` length from the starting point. If this is being called repeatedly for the same curve, you may save
-	/// some calculation by provided a precalculated length value. However, providing an incorrect value is untested and
-	/// unsupported. No protections are made against this. Behave yourself.
-//	func pointAlongCurve(atPercent percent: Double, precalculatedLength: Double? = nil) -> CGPoint? {
-////		// FIXME: Read note:
-////		// check that this work with subpaths - subpaths can move and close, allowing for a move to happen where there might be a previous point, unintentionally
-////		guard previous?.endPoint != nil else {
-////			if case CGPath.PathElement.moveTo(point: let move) = self.element {
-////				return move
-////			}
-////			return nil
-////		}
-//
-//		switch curve {
-//		case .moveTo(point: let point):
-//			return point
-//		case .close:
-//			return startingPoint
-//		case .addLineTo(point: let end):
-//			return (startingPoint ?? .zero).interpolation(to: end, tValue: percent)
-//		case .addCurveTo, .addQuadCurveTo:
-//			break
-//		}
-//
-//		let percent = percent.clamped()
-//		let length = precalculatedLength ?? self.length
-//		let desiredLength = length * percent
-//
-//		var currentLength: CGFloat = 0
-//		let relativeSectionLength = 1.0 / CGFloat(CGPath.PathSection.curveResolution)
-//		var iteration = 0
-//		var lastLength: CGFloat = 0
-//		while currentLength < desiredLength && iteration < CGPath.PathSection.curveResolution {
-//			lastLength = calculateCurveLengthForSpan(iterationStep: iteration, relativeSectionLength: relativeSectionLength)
-//			currentLength += lastLength
-//			iteration += 1
-//		}
-//
-//		let remaining = desiredLength - (currentLength - lastLength)
-//		let straightPercentage = remaining / lastLength
-//		guard let (subPointStart, subPointEnd) = calculateCurveStartStopPointsForSpan(iterationStep: iteration - 1, relativeSectionLength: relativeSectionLength) else { return nil }
-//
-//		return linearBezierPoint(t: straightPercentage, start: subPointStart, end: subPointEnd)
-//	}
-}
-
-@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 extension Array where Element == CGPath.Segment {
+	/// A measurement of the segments contained within. This value is recalculated every time it's accessed.
 	@inline(__always)
 	public var length: Double { reduce(0) { $0 + $1.length } }
 }
