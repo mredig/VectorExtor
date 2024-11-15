@@ -3,7 +3,7 @@ import CoreGraphics
 
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath {
-	@available(*, deprecated, renamed: "segments")
+	@available(*, deprecated, renamed: "Segment")
 	enum PathElement: Equatable {
 		case moveTo(point: CGPoint)
 		case addLineTo(point: CGPoint)
@@ -83,6 +83,27 @@ public extension CGPath {
 			store.append(newSection)
 		}
 		return store
+	}
+
+	@available(*, deprecated, renamed: "percentAlongPath")
+	func pointAlongPath(atPercent percent: CGFloat, precalculatedLength: CGFloat? = nil) -> CGPoint? {
+		let subpaths = sections
+		let percent = percent.clamped()
+		let length = precalculatedLength ?? self.length
+		let desiredLength = length * percent
+
+		var currentLength: CGFloat = 0
+
+		for subpath in subpaths {
+			let thisSubLength = subpath.length
+			currentLength += thisSubLength
+			if currentLength >= desiredLength {
+				let remaining = desiredLength - (currentLength - thisSubLength)
+				let straightPercentage = thisSubLength != 0 ? remaining / thisSubLength : 0
+				return subpath.pointAlongCurve(atPercent: straightPercentage)
+			}
+		}
+		return nil
 	}
 }
 
