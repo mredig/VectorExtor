@@ -191,12 +191,13 @@ struct CGPathExtensionsTests {
 
 	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 	@Test func testSVGString() {
-		let path = generateBezierScribble()
+		let build = generateBezierScribble().mutableCopy()!
+		build.closeSubpath()
+		let path = build.copy()!
 
 		let svg = path.svgString
-		#expect("M0.0,7.0 L44.0,7.0 C44.0,7.0 68.0,9.0 66.0,0.0 Q66.0,-7.0 80.0,-7.0" == svg)
+		#expect("M0.0,7.0 L44.0,7.0 C44.0,7.0 68.0,9.0 66.0,0.0 Q66.0,-7.0 80.0,-7.0 z" == svg)
 	}
-
 
 	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 	@Test func descriptions() {
