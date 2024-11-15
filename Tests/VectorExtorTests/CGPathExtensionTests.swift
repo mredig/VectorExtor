@@ -49,7 +49,7 @@ struct CGPathExtensionsTests {
 	}
 
 	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
-	@Test func testArbitrarySegmentation() throws {
+	@Test func arbitrarySegmentation() throws {
 		let expectations = [
 			"C2.0,3.0 8.0,3.0 8.0,5.0",
 			"C2.0,3.0 8.0,3.0 8.0,5.0",
@@ -78,30 +78,43 @@ struct CGPathExtensionsTests {
 	}
 
 	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
-	@Test func testPathSegments() {
-		let path = generateBezierScribble()
-		let elements = path.segments
+	@Test func pathSegmentValidation() {
+		let build = generateBezierScribble().mutableCopy()!
+		build.closeSubpath()
+		let path = build.copy()!
 
-		let element0: CGPath.Segment = .moveTo(
+		let segments = path.segments
+
+		let segment0: CGPath.Segment = .moveTo(
 			.init(endPoint: CGPoint(x: 0, y: 7)))
-		let element1: CGPath.Segment = .addLineTo(
-			.init(startPoint: element0.endPoint, endPoint: CGPoint(x: 44, y: 7)))
-		let element2: CGPath.Segment = .addCurveTo(
+		let segment1: CGPath.Segment = .addLineTo(
+			.init(startPoint: segment0.endPoint, endPoint: CGPoint(x: 44, y: 7)))
+		let segment2: CGPath.Segment = .addCurveTo(
 			.init(
-				startPoint: element1.endPoint,
+				startPoint: segment1.endPoint,
 				control1: CGPoint(x: 44, y: 7),
 				control2: CGPoint(x: 68, y: 9),
 				endPoint: CGPoint(x: 66, y: 0)))
-		let element3: CGPath.Segment = .addQuadCurveTo(
+		let segment3: CGPath.Segment = .addQuadCurveTo(
 			.init(
-				startPoint: element2.endPoint,
+				startPoint: segment2.endPoint,
 				controlPoint: CGPoint(x: 66, y: -7),
 				endPoint: CGPoint(x: 80, y: -7)))
+		let segment4 = CGPath.Segment.close(.init(startPoint: segment3.endPoint, endPoint: segment0.endPoint))
 
-		#expect(element0 == elements[0])
-		#expect(element1 == elements[1])
-		#expect(element2 == elements[2])
-		#expect(element3 == elements[3])
+		#expect(segment0._startPoint == nil)
+		#expect(segment0 == segments[0])
+		#expect(segment1 == segments[1])
+		#expect(segment2 == segments[2])
+		#expect(segment3 == segments[3])
+		#expect(segment4 == segments[4])
+		#expect(segment4.endPoint == CGPoint(x: 0, y: 7))
+
+		#expect(segment0.curve as? CGPath.Segment.MoveSegment != nil)
+		#expect(segment1.curve as? CGPath.Segment.LineSegment != nil)
+		#expect(segment2.curve as? CGPath.Segment.CubicCurve != nil)
+		#expect(segment3.curve as? CGPath.Segment.QuadCurve != nil)
+		#expect(segment4.curve as? CGPath.Segment.CloseSegment != nil)
 	}
 
 	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
