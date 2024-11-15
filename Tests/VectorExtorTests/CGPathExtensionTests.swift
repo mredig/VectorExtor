@@ -113,22 +113,27 @@ struct CGPathExtensionsTests {
 	}
 
 	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
-	@Test func testLength() {
+	@Test func segmentLength() {
 		let path = generateBezierScribble()
 
-		let sections = path.segments
-		let (section0, section1, section2, section3) = (sections[0], sections[1], sections[2], sections[3])
+		let segments = path.segments
+		let (segment0, segment1, segment2, segment3) = (segments[0], segments[1], segments[2], segments[3])
 
-		#expect(0 == section0.length)
-		#expect(44 == section1.length)
-		#expect(floatsAreEqual(25.74223, section2.length, accuracy: 0.00001))
-		#expect(floatsAreEqual(17.43425, section3.length, accuracy: 0.00001))
+		#expect(0 == segment0.length)
+		#expect(44 == segment1.length)
+		#expect(floatsAreEqual(25.74223, segment2.length, accuracy: 0.00001))
+		#expect(floatsAreEqual(17.43425, segment3.length, accuracy: 0.00001))
+	}
+
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func pathLength() {
+		let path = generateBezierScribble()
 
 		#expect(floatsAreEqual(87.1765, path.length, accuracy: 0.00001))
 	}
 
 	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
-	@Test func testPointAlongCurve() {
+	@Test func percentAlongCurveArbitraryPercents1() {
 		let path = generateSimpleCurve()
 		let segment = path.segments.last!
 
@@ -149,19 +154,27 @@ struct CGPathExtensionsTests {
 		expected = CGPoint(x: 8, y: 5)
 		#expect(floatsAreEqual(expected.x, result.x, accuracy: 0.0001))
 		#expect(floatsAreEqual(expected.y, result.y, accuracy: 0.0001))
+	}
 
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func percentAlongCurveArbitraryPercents2() {
 		let path2 = generateSimpleCurve2()
 		let segment2 = path2.segments.last!
 
-		result = segment2.percentAlongCurve(0.25)!
-		expected = CGPoint(x: 3.107779, y: 4.333667)
+		var result = segment2.percentAlongCurve(0.25)!
+		var expected = CGPoint(x: 3.107779, y: 4.333667)
 		#expect(floatsAreEqual(expected.x, result.x, accuracy: 0.0001))
 		#expect(floatsAreEqual(expected.y, result.y, accuracy: 0.0001))
 		result = segment2.pointAlongCurve(t: 0.25)
 		expected = CGPoint(x: 2.375, y: 4.4375)
 		#expect(floatsAreEqual(expected.x, result.x, accuracy: 0.0001))
 		#expect(floatsAreEqual(expected.y, result.y, accuracy: 0.0001))
+	}
 
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func percentAlongCurveProcedural() {
+		let path = generateSimpleCurve()
+		let segment = path.segments.last!
 		// confirmed all these points through manual entry in affinity designer
 		let length = segment.length
 		#expect(floatsAreEqual(7.34655, length, accuracy: 0.00001))
@@ -183,6 +196,12 @@ struct CGPathExtensionsTests {
 			#expect(floatsAreEqual(expected.0.x, result.x, accuracy: 0.01), sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: expected.1, column: #column))
 			#expect(floatsAreEqual(expected.0.y, result.y, accuracy: 0.01), sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: expected.1, column: #column))
 		}
+	}
+
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func pointAlongCurveProcedural() {
+		let path = generateSimpleCurve()
+		let segment = path.segments.last!
 
 		let tPoints = stride(from: CGFloat(0.0), through: 1.0, by: 0.1).compactMap { segment.pointAlongCurve(t: $0) }
 		let expectedtPoints: [(CGPoint, Int)] = [
@@ -201,12 +220,11 @@ struct CGPathExtensionsTests {
 		for (result, expected) in zip(tPoints, expectedtPoints) {
 			#expect(floatsAreEqual(expected.0.x, result.x, accuracy: 0.01), sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: expected.1, column: #column))
 			#expect(floatsAreEqual(expected.0.y, result.y, accuracy: 0.01), sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: expected.1, column: #column))
-
 		}
 	}
 
 	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
-	@Test func testPointAlongPath() {
+	@Test func percentAlongPath() {
 		let path = generateSimplePath()
 
 		let length = path.length
