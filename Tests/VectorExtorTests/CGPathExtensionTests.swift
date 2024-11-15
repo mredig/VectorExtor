@@ -18,6 +18,12 @@ struct CGPathExtensionsTests {
 		return path
 	}
 
+	func generateClosedBezierScribble() -> CGPath {
+		let scribble = generateBezierScribble().mutableCopy()
+		scribble?.closeSubpath()
+		return scribble!.copy()!
+	}
+
 	func generateSimpleCurve() -> CGPath {
 		let path = CGMutablePath()
 
@@ -272,6 +278,24 @@ struct CGPathExtensionsTests {
 		let path = generateBezierScribble()
 
 		#expect(floatsAreEqual(87.1765, path.length, accuracy: 0.00001))
+	}
+
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func percentAlongCurveAllSegments() {
+		let path = generateClosedBezierScribble()
+		let segments = path.segments
+
+		let expectations: [CGPoint?] = [
+			nil,
+			CGPoint(x: 35.2, y: 7.0),
+			CGPoint(x: 64.14419446885586, y: 4.434951804578304),
+			CGPoint(x: 76.5104216337204, y: -6.875160276889801),
+			nil,
+		]
+
+		for (segment, expectation) in zip(segments, expectations) {
+			#expect(segment.percentAlongCurve(0.8) == expectation)
+		}
 	}
 
 	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
