@@ -112,7 +112,7 @@ enum PercentCalculation: BenchyComparator {
 		path.addQuadCurve(to: CGPoint(x: 80, y: -7), control: CGPoint(x: 66, y: -7))
 		path.closeSubpath()
 
-		ChildBenchmark(label: "Point at Percent Segment (new)") { i, label in
+		ChildBenchmark(label: "Point at Percent for Segment (new)") { i, label in
 			for segment in path.segments {
 				for i in 0...47 {
 					let t = Double(i) / 47.0
@@ -121,7 +121,7 @@ enum PercentCalculation: BenchyComparator {
 			}
 		}
 
-		ChildBenchmark(label: "Point at Percent Section (old)") { i, label in
+		ChildBenchmark(label: "Point at Percent for Section (old)") { i, label in
 			for section in path.sections {
 				for i in 0...47 {
 					let t = Double(i) / 47.0
@@ -147,14 +147,14 @@ enum PercentCalculationPath: BenchyComparator {
 
 		let path = pathBuilder.copy()!
 
-		ChildBenchmark(label: "Point at Percent Segment (new)") { i, label in
+		ChildBenchmark(label: "Point at Percent for Path (new)") { i, label in
 			for i in 0...47 {
 				let t = Double(i) / 47.0
 				_ = path.percentAlongPath(t)
 			}
 		}
 
-		ChildBenchmark(label: "Point at Percent Section (old)") { i, label in
+		ChildBenchmark(label: "Point at Percent for Path (old)") { i, label in
 			for i in 0...47 {
 				let t = Double(i) / 47.0
 				_ = path.pointAlongPath(atPercent: t)
