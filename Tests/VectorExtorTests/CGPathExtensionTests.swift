@@ -118,6 +118,78 @@ struct CGPathExtensionsTests {
 	}
 
 	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func splits() {
+		let commonStart = CGPoint(x: 3, y: 4)
+		let commonControl1 = CGPoint(x: 10, y: 20)
+		let commonControl2 = CGPoint(x: 13, y: 25)
+		let commonEnd = CGPoint(x: 30, y: 40)
+
+		let tests: [CGPath.Segment] = [
+			.moveTo(.init(startPoint: commonStart, endPoint: commonEnd)),
+			.addLineTo(.init(startPoint: commonStart, endPoint: commonEnd)),
+			.addQuadCurveTo(
+				.init(
+					startPoint: commonStart,
+					controlPoint: commonControl1,
+					endPoint: commonEnd)),
+			.addCurveTo(
+				.init(
+					startPoint: commonStart,
+					control1: commonControl1,
+					control2: commonControl2,
+					endPoint: commonEnd)),
+			.close(.init(startPoint: commonStart, endPoint: commonEnd))
+		]
+
+		let commonMid = commonStart.interpolation(to: commonEnd, tValue: 0.45)
+
+		let expectations: [(CGPath.Segment, CGPath.Segment)] = [
+			(
+				.moveTo(.init(startPoint: commonStart, endPoint: commonMid)),
+				.moveTo(.init(startPoint: commonMid, endPoint: commonEnd))
+			),
+			(
+				.addLineTo(.init(startPoint: commonStart, endPoint: commonMid)),
+				.addLineTo(.init(startPoint: commonMid, endPoint: commonEnd))
+			),
+			(
+				.addQuadCurveTo(
+					.init(
+						startPoint: commonStart,
+						controlPoint: CGPoint(x: 6.15, y: 11.2),
+						endPoint: CGPoint(x: 11.932500000000001, y: 19.21))),
+				.addQuadCurveTo(
+					.init(
+						startPoint: CGPoint(x: 11.932500000000001, y: 19.21),
+						controlPoint: CGPoint(x: 19, y: 29),
+						endPoint: commonEnd))
+			),
+			(
+				.addCurveTo(
+					.init(
+						startPoint: commonStart,
+						control1: CGPoint(x: 6.15, y: 11.2),
+						control2: CGPoint(x: 8.49, y: 16.1725),
+						endPoint: CGPoint(x: 11.660250000000001, y: 20.831125))),
+				.addCurveTo(
+					.init(
+						startPoint: CGPoint(x: 11.660250000000001, y: 20.831125),
+						control1: CGPoint(x: 15.535, y: 26.525),
+						control2: CGPoint(x: 20.65, y: 31.75),
+						endPoint: commonEnd))
+			),
+			(
+				.close(.init(startPoint: commonStart, endPoint: commonEnd)),
+				.close(.init(startPoint: commonEnd, endPoint: commonEnd))
+			)
+		]
+
+		for (test, expectation) in zip(tests, expectations) {
+			#expect(test.split(at: 0.45) == expectation)
+		}
+	}
+
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 	@Test func testSVGString() {
 		let path = generateBezierScribble()
 
