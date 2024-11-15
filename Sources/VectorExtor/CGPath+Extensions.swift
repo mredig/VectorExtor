@@ -65,10 +65,10 @@ public extension CGPath {
 		})
 	}
 
-	func pointAlongPath(atPercent percent: Double, precalculatedLength: Double? = nil) -> CGPoint? {
+	func percentAlongPath(_ percent: Double) -> CGPoint? {
 		let subpaths = segmentLengths()
 		let percent = percent.clamped()
-		let length = precalculatedLength ?? subpaths.map(\.length).reduce(0, +)
+		let length = subpaths.map(\.length).reduce(0, +)
 		let goalLength = length * percent
 
 		var accumulatedLength: Double = 0

@@ -222,7 +222,7 @@ class CGPathExtensionsTests: XCTestCase {
 
 		let length = path.length
 		XCTAssertEqual(7.34655280261004, length, accuracy: 0.00001)
-		let percentagePoints = stride(from: CGFloat(0.0), through: 1.0, by: 0.1).compactMap { path.pointAlongPath(atPercent: $0, precalculatedLength: length) }
+		let percentagePoints = stride(from: CGFloat(0.0), through: 1.0, by: 0.1).compactMap { path.percentAlongPath($0) }
 		let expectedPoints: [(CGPoint, UInt)] = [
 			(CGPoint(x: 2.0, y: 5.0), #line),
 			(CGPoint(x: 2.2578125, y: 4.34375), #line),
