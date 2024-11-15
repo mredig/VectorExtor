@@ -26,6 +26,32 @@ class CGPathExtensionsTests: XCTestCase {
 		return path
 	}
 
+	func generateSimpleCurve() -> CGPath {
+		let path = CGMutablePath()
+
+		path.move(to: CGPoint(x: 2, y: 5))
+		path.addCurve(to: CGPoint(x: 8, y: 5), control1: CGPoint(x: 2, y: 3), control2: CGPoint(x: 8, y: 3))
+		return path
+	}
+
+	func generateSimpleCurve2() -> CGPath {
+		let path = CGMutablePath()
+
+		path.move(to: CGPoint(x: 2, y: 5))
+		path.addCurve(to: CGPoint(x: 8, y: 5), control1: CGPoint(x: 0, y: 4), control2: CGPoint(x: 10, y: 4))
+		return path
+	}
+
+	// effectively equal to simple curve 1
+	func generateSimplePath() -> CGPath {
+		let path = CGMutablePath()
+
+		path.move(to: CGPoint(x: 2, y: 5))
+		path.addCurve(to: CGPoint(x: 5, y: 3.5), control1: CGPoint(x: 2, y: 4), control2: CGPoint(x: 3.5, y: 3.5))
+		path.addCurve(to: CGPoint(x: 8, y: 5), control1: CGPoint(x: 6.5, y: 3.5), control2: CGPoint(x: 8, y: 4))
+		return path
+	}
+
 	func testArbitrarySegmentation() throws {
 		let expectations = [
 			"C2.0,3.0 8.0,3.0 8.0,5.0",
@@ -54,71 +80,31 @@ class CGPathExtensionsTests: XCTestCase {
 		}
 	}
 
-	func generateSimpleCurve() -> CGPath {
-		let path = CGMutablePath()
-
-		path.move(to: CGPoint(x: 2, y: 5))
-		path.addCurve(to: CGPoint(x: 8, y: 5), control1: CGPoint(x: 2, y: 3), control2: CGPoint(x: 8, y: 3))
-		return path
-	}
-
-	func generateSimpleCurve2() -> CGPath {
-		let path = CGMutablePath()
-
-		path.move(to: CGPoint(x: 2, y: 5))
-		path.addCurve(to: CGPoint(x: 8, y: 5), control1: CGPoint(x: 0, y: 4), control2: CGPoint(x: 10, y: 4))
-		return path
-	}
-
-	// effectively equal to simple curve 1
-	func generateSimplePath() -> CGPath {
-		let path = CGMutablePath()
-
-		path.move(to: CGPoint(x: 2, y: 5))
-		path.addCurve(to: CGPoint(x: 5, y: 3.5), control1: CGPoint(x: 2, y: 4), control2: CGPoint(x: 3.5, y: 3.5))
-		path.addCurve(to: CGPoint(x: 8, y: 5), control1: CGPoint(x: 6.5, y: 3.5), control2: CGPoint(x: 8, y: 4))
-		return path
-	}
-
-	#if DEBUG
-	@available(*, deprecated)
-	func testPathElements() {
+	func testPathSegments() {
 		let path = generateBezierScribble()
+		let elements = path.segments
 
-		let elements = path.elements
-
-		let element0: CGPath.PathElement = .moveTo(point: CGPoint(x: 0, y: 7))
-		let element1: CGPath.PathElement = .addLineTo(point: CGPoint(x: 44, y: 7))
-		let element2: CGPath.PathElement = .addCurveTo(point: CGPoint(x: 66, y: 0),
-													   controlPoint1: CGPoint(x: 44, y: 7),
-													   controlPoint2: CGPoint(x: 68, y: 9))
-		let element3: CGPath.PathElement = .addQuadCurveTo(point: CGPoint(x: 80, y: -7),
-														   controlPoint: CGPoint(x: 66, y: -7))
+		let element0: CGPath.Segment = .moveTo(
+			.init(endPoint: CGPoint(x: 0, y: 7)))
+		let element1: CGPath.Segment = .addLineTo(
+			.init(startPoint: element0.endPoint, endPoint: CGPoint(x: 44, y: 7)))
+		let element2: CGPath.Segment = .addCurveTo(
+			.init(
+				startPoint: element1.endPoint,
+				control1: CGPoint(x: 44, y: 7),
+				control2: CGPoint(x: 68, y: 9),
+				endPoint: CGPoint(x: 66, y: 0)))
+		let element3: CGPath.Segment = .addQuadCurveTo(
+			.init(
+				startPoint: element2.endPoint,
+				controlPoint: CGPoint(x: 66, y: -7),
+				endPoint: CGPoint(x: 80, y: -7)))
 
 		XCTAssertEqual(element0, elements[0])
 		XCTAssertEqual(element1, elements[1])
 		XCTAssertEqual(element2, elements[2])
 		XCTAssertEqual(element3, elements[3])
-
-		let sections = path.sections
-		let (section0, section1, section2, section3) = (sections[0], sections[1], sections[2], sections[3])
-		XCTAssertNil(section0.previous)
-		XCTAssertEqual(section0.element, element0)
-		XCTAssertTrue(section0.next === section1)
-
-		XCTAssertTrue(section1.previous === section0)
-		XCTAssertEqual(section1.element, element1)
-		XCTAssertTrue(section1.next === section2)
-
-		XCTAssertTrue(section2.previous === section1)
-		XCTAssertEqual(section2.element, element2)
-		XCTAssertTrue(section2.next === section3)
-
-		XCTAssertTrue(section3.previous === section2)
-		XCTAssertEqual(section3.element, element3)
-		XCTAssertNil(section3.next)
 	}
-	#endif
 
 	func testSVGString() {
 		let path = generateBezierScribble()
