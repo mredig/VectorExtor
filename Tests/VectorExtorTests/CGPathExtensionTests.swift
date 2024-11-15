@@ -197,6 +197,62 @@ struct CGPathExtensionsTests {
 		#expect("M0.0,7.0 L44.0,7.0 C44.0,7.0 68.0,9.0 66.0,0.0 Q66.0,-7.0 80.0,-7.0" == svg)
 	}
 
+
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func descriptions() {
+		let commonStart = CGPoint(x: 3, y: 4)
+		let commonControl1 = CGPoint(x: 10, y: 20)
+		let commonControl2 = CGPoint(x: 13, y: 25)
+		let commonEnd = CGPoint(x: 30, y: 40)
+
+		let tests: [CGPath.Segment] = [
+			.moveTo(.init(startPoint: commonStart, endPoint: commonEnd)),
+			.moveTo(.init(endPoint: commonEnd)),
+			.addLineTo(.init(startPoint: commonStart, endPoint: commonEnd)),
+			.addQuadCurveTo(
+				.init(
+					startPoint: commonStart,
+					controlPoint: commonControl1,
+					endPoint: commonEnd)),
+			.addCurveTo(
+				.init(
+					startPoint: commonStart,
+					control1: commonControl1,
+					control2: commonControl2,
+					endPoint: commonEnd)),
+			.close(.init(startPoint: commonStart, endPoint: commonEnd)),
+			.close(.init(endPoint: commonEnd)),
+		]
+
+		let expectations = [
+			"Segment.MoveSegment - (3.0, 4.0), (30.0, 40.0)",
+			"Segment.MoveSegment - (30.0, 40.0)",
+			"Segment.LineSegment - (3.0, 4.0), (30.0, 40.0)",
+			"Segment.QuadCurve - (3.0, 4.0), (10.0, 20.0), (30.0, 40.0)",
+			"Segment.CubicCurve - (3.0, 4.0), (10.0, 20.0), (13.0, 25.0), (30.0, 40.0)",
+			"Segment.CloseSegment",
+			"Segment.CloseSegment",
+		]
+
+		for (test, expectation) in zip(tests, expectations) {
+			#expect(test.description == expectation)
+		}
+
+		let debugExpectations = [
+			"Segment.MoveSegment - (3.0, 4.0), (30.0, 40.0)",
+			"Segment.MoveSegment - (30.0, 40.0)",
+			"Segment.LineSegment - (3.0, 4.0), (30.0, 40.0)",
+			"Segment.QuadCurve - (3.0, 4.0), (10.0, 20.0), (30.0, 40.0)",
+			"Segment.CubicCurve - (3.0, 4.0), (10.0, 20.0), (13.0, 25.0), (30.0, 40.0)",
+			"Segment.CloseSegment - (3.0, 4.0), (30.0, 40.0)",
+			"Segment.CloseSegment - (30.0, 40.0)",
+		]
+
+		for (test, expectation) in zip(tests, debugExpectations) {
+			#expect(test.debugDescription == expectation)
+		}
+	}
+
 	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 	@Test func segmentLength() {
 		let path = generateBezierScribble()

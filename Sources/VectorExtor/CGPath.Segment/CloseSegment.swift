@@ -26,7 +26,7 @@ public extension CGPath.Segment {
 				.compactMap { $0 }
 				.map { $0.description }
 				.joined(separator: ", ")
-			return "\(description)-\(points)"
+			return "\(description) - \(points)"
 		}
 
 		/// See entry in `CGPath.SegmentProtocol`

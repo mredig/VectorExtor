@@ -12,8 +12,8 @@ public extension CGPath {
 		/// Indicates whether you can split this type into smaller segments.
 		public static var isSplitable: Bool { true }
 
-		public var description: String { "Segment.\(curve.description))" }
-		public var debugDescription: String { description }
+		public var description: String { "Segment.\(curve.description)" }
+		public var debugDescription: String { "Segment.\(curve.debugDescription)" }
 
 		case moveTo(MoveSegment)
 		case addLineTo(LineSegment)
