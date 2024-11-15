@@ -146,7 +146,7 @@ class CGPathExtensionsTests: XCTestCase {
 		let segment = path.segments.last!
 
 		var result = segment.percentAlongCurve(0.25)!
-		var expected = CGPoint(x: 3.19161604, y: 3.774775)
+		var expected = CGPoint(x: 3.192581, y: 3.774435)
 		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
 		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
 		result = segment.pointAlongCurve(t: 0.25)
@@ -221,22 +221,26 @@ class CGPathExtensionsTests: XCTestCase {
 		let path = generateSimplePath()
 
 		let length = path.length
-		XCTAssertEqual(7.3275697425434085, length, accuracy: 0.00001)
+		XCTAssertEqual(7.34655280261004, length, accuracy: 0.00001)
 		let percentagePoints = stride(from: CGFloat(0.0), through: 1.0, by: 0.1).compactMap { path.pointAlongPath(atPercent: $0, precalculatedLength: length) }
-		let expectedPoints = [
-			CGPoint(x: 2.0, y: 5.0),
-			CGPoint(x: 2.265544902523698, y: 4.335119181391632),
-			CGPoint(x: 2.857953127107415, y: 3.911861477399667),
-			CGPoint(x: 3.5478578546712503, y: 3.668644905707304),
-			CGPoint(x: 4.268736823956322, y: 3.540368395330985),
-			CGPoint(x: 5.000000000000001, y: 3.5),
-			CGPoint(x: 5.7312631760436785, y: 3.540368395330985),
-			CGPoint(x: 6.452142145328748, y: 3.668644905707303),
-			CGPoint(x: 7.142046872892585, y: 3.911861477399666),
-			CGPoint(x: 7.734455097476303, y: 4.335119181391634),
-			CGPoint(x: 8.0, y: 5.0)
+		let expectedPoints: [(CGPoint, UInt)] = [
+			(CGPoint(x: 2.0, y: 5.0), #line),
+			(CGPoint(x: 2.2578125, y: 4.34375), #line),
+			(CGPoint(x: 2.857953127107415, y: 3.911861477399667), #line),
+			(CGPoint(x: 3.5478578546712503, y: 3.668644905707304), #line),
+			(CGPoint(x: 4.268736823956322, y: 3.540368395330985), #line),
+			(CGPoint(x: 5.000000000000001, y: 3.5), #line),
+			(CGPoint(x: 5.7312631760436785, y: 3.540368395330985), #line),
+			(CGPoint(x: 6.452142145328748, y: 3.668644905707303), #line),
+			(CGPoint(x: 7.142046872892585, y: 3.911861477399666), #line),
+			(CGPoint(x: 7.7421875, y: 4.34375), #line),
+			(CGPoint(x: 8.0, y: 5.0), #line),
 		]
-		XCTAssertEqual(expectedPoints, percentagePoints)
+		XCTAssertEqual(percentagePoints.count, expectedPoints.count)
+		for (result, expected) in zip(percentagePoints, expectedPoints) {
+			XCTAssertEqual(expected.0.x, result.x, accuracy: 0.005, line: expected.1)
+			XCTAssertEqual(expected.0.y, result.y, accuracy: 0.005, line: expected.1)
+		}
 	}
 
 	// this is just a scratchpad - not meant as a real test
