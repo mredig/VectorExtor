@@ -19,7 +19,16 @@ public extension CGPath.Segment {
 		/// See entry in `CGPath.SegmentProtocol`
 		@inline(__always)
 		public var svgString: String { "z" }
-		
+
+		public var description: String { "\(Self.self)" }
+		public var debugDescription: String {
+			let points = [_startPoint, endPoint]
+				.compactMap { $0 }
+				.map { $0.description }
+				.joined(separator: ", ")
+			return "\(description)-\(points)"
+		}
+
 		/// See entry in `CGPath.SegmentProtocol`
 		@inline(__always)
 		public init(startPoint: CGPoint? = nil, endPoint: CGPoint) {

@@ -32,6 +32,17 @@ public extension CGPath.Segment {
 			"C\(control1.x),\(control1.y) \(control2.x),\(control2.y) \(endPoint.x),\(endPoint.y)"
 		}
 
+		public var description: String {
+			let points = [_startPoint, control1, control2, endPoint]
+				.compactMap { $0 }
+				.map { $0.description }
+				.joined(separator: ", ")
+			return "\(Self.self) - \(points)"
+		}
+		public var debugDescription: String {
+			description
+		}
+
 		@inline(__always)
 		public init(startPoint: CGPoint?, control1: CGPoint, control2: CGPoint, endPoint: CGPoint) {
 			self._startPoint = startPoint

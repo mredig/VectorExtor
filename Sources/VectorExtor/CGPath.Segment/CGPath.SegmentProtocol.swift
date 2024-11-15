@@ -4,7 +4,7 @@ import CoreGraphics
 @available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
 public extension CGPath {
 	/// A common set of properties and methods for all `Segment`s
-	protocol SegmentProtocol {
+	protocol SegmentProtocol: CustomStringConvertible, CustomDebugStringConvertible {
 		/// The location of the starting point. Can be `nil`. Using `startPoint` on most implementers will default
 		/// to `.zero`, but if used in a sequence, it would usually be the previous item's `endPoint`
 		@inline(__always)

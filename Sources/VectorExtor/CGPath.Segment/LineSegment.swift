@@ -23,6 +23,17 @@ public extension CGPath.Segment {
 		@inline(__always)
 		public var svgString: String { "L\(endPoint.x),\(endPoint.y)" }
 
+		public var description: String {
+			let points = [_startPoint, endPoint]
+				.compactMap { $0 }
+				.map { $0.description }
+				.joined(separator: ", ")
+			return "\(Self.self) - \(points)"
+		}
+		public var debugDescription: String {
+			description
+		}
+
 		@inline(__always)
 		public init(startPoint: CGPoint?, endPoint: CGPoint) {
 			self._startPoint = startPoint

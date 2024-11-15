@@ -6,19 +6,30 @@ public extension CGPath.Segment {
 	struct MoveSegment: CGPath.SegmentProtocol, Hashable, Codable, Sendable {
 		/// See entry in `CGPath.SegmentProtocol`
 		public static var isSplitable: Bool { false }
-		@inline(__always)
 		/// See entry in `CGPath.SegmentProtocol`
+		@inline(__always)
 		public let _startPoint: CGPoint?
-		@inline(__always)
 		/// See entry in `CGPath.SegmentProtocol`
+		@inline(__always)
 		public let endPoint: CGPoint
 
-		@inline(__always)
 		/// See entry in `CGPath.SegmentProtocol`
+		@inline(__always)
 		public var length: Double { 0 }
-		@inline(__always)
 		/// See entry in `CGPath.SegmentProtocol`
+		@inline(__always)
 		public var svgString: String { "M\(endPoint.x),\(endPoint.y)" }
+
+		public var description: String {
+			let points = [_startPoint, endPoint]
+				.compactMap { $0 }
+				.map { $0.description }
+				.joined(separator: ", ")
+			return "\(Self.self) - \(points)"
+		}
+		public var debugDescription: String {
+			description
+		}
 
 		@inline(__always)
 		public init(startPoint: CGPoint? = nil, endPoint: CGPoint) {

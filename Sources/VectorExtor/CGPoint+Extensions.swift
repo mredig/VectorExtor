@@ -149,3 +149,9 @@ extension CGPoint: @retroactive Hashable {
 		hasher.combine(y)
 	}
 }
+
+extension CGPoint: @retroactive CustomStringConvertible {
+	public var description: String {
+		"(\(x), \(y))"
+	}
+}
