@@ -1,21 +1,13 @@
-import XCTest
+#if canImport(CoreGraphics)
+import Testing
+import CoreGraphics
 #if DEBUG
 @testable import VectorExtor
 #else
 import VectorExtor
 #endif
 
-@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
-class CGPathExtensionsTests: XCTestCase {
-
-    override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
+struct CGPathExtensionsTests {
 	func generateBezierScribble() -> CGPath {
 		let path = CGMutablePath()
 
@@ -52,7 +44,12 @@ class CGPathExtensionsTests: XCTestCase {
 		return path
 	}
 
-	func testArbitrarySegmentation() throws {
+	func floatsAreEqual<F: FloatingPoint>(_ a: F, _ b: F, accuracy: F = 0.0001) -> Bool {
+		abs(a - b) <= accuracy
+	}
+
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func testArbitrarySegmentation() throws {
 		let expectations = [
 			"C2.0,3.0 8.0,3.0 8.0,5.0",
 			"C2.0,3.0 8.0,3.0 8.0,5.0",
@@ -74,13 +71,14 @@ class CGPathExtensionsTests: XCTestCase {
 			let parts = lastSeg.split(intoSegments: index)
 			let svg = parts.map(\.svgString).joined(separator: " ")
 			if index > 0 {
-				XCTAssertEqual(parts.count, index)
+				#expect(parts.count == index)
 			}
-			XCTAssertEqual(svg, expectation)
+			#expect(svg == expectation)
 		}
 	}
 
-	func testPathSegments() {
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func testPathSegments() {
 		let path = generateBezierScribble()
 		let elements = path.segments
 
@@ -100,72 +98,75 @@ class CGPathExtensionsTests: XCTestCase {
 				controlPoint: CGPoint(x: 66, y: -7),
 				endPoint: CGPoint(x: 80, y: -7)))
 
-		XCTAssertEqual(element0, elements[0])
-		XCTAssertEqual(element1, elements[1])
-		XCTAssertEqual(element2, elements[2])
-		XCTAssertEqual(element3, elements[3])
+		#expect(element0 == elements[0])
+		#expect(element1 == elements[1])
+		#expect(element2 == elements[2])
+		#expect(element3 == elements[3])
 	}
 
-	func testSVGString() {
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func testSVGString() {
 		let path = generateBezierScribble()
 
 		let svg = path.svgString
-		XCTAssertEqual("M0.0,7.0 L44.0,7.0 C44.0,7.0 68.0,9.0 66.0,0.0 Q66.0,-7.0 80.0,-7.0", svg)
+		#expect("M0.0,7.0 L44.0,7.0 C44.0,7.0 68.0,9.0 66.0,0.0 Q66.0,-7.0 80.0,-7.0" == svg)
 	}
 
-	func testLength() {
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func testLength() {
 		let path = generateBezierScribble()
 
 		let sections = path.segments
 		let (section0, section1, section2, section3) = (sections[0], sections[1], sections[2], sections[3])
 
-		XCTAssertEqual(0, section0.length)
-		XCTAssertEqual(44, section1.length)
-		XCTAssertEqual(25.74223, section2.length, accuracy: 0.00001)
-		XCTAssertEqual(17.43425, section3.length, accuracy: 0.00001)
+		#expect(0 == section0.length)
+		#expect(44 == section1.length)
+		#expect(floatsAreEqual(25.74223, section2.length, accuracy: 0.00001))
+		#expect(floatsAreEqual(17.43425, section3.length, accuracy: 0.00001))
 
-		XCTAssertEqual(87.1765, path.length, accuracy: 0.00001)
+		#expect(floatsAreEqual(87.1765, path.length, accuracy: 0.00001))
 	}
 
-	func testPointAlongCurve() {
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func testPointAlongCurve() {
 		let path = generateSimpleCurve()
 		let segment = path.segments.last!
 
 		var result = segment.percentAlongCurve(0.25)!
 		var expected = CGPoint(x: 3.192581, y: 3.774435)
-		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
-		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		#expect(floatsAreEqual(expected.x, result.x, accuracy: 0.0001))
+		#expect(floatsAreEqual(expected.y, result.y, accuracy: 0.0001))
 		result = segment.pointAlongCurve(t: 0.25)
 		expected = CGPoint(x: 2.9375, y: 3.875)
-		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
-		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		#expect(floatsAreEqual(expected.x, result.x, accuracy: 0.0001))
+		#expect(floatsAreEqual(expected.y, result.y, accuracy: 0.0001))
 
 		result = segment.pointAlongCurve(t: 0.0)
 		expected = CGPoint(x: 2, y: 5)
-		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
-		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		#expect(floatsAreEqual(expected.x, result.x, accuracy: 0.0001))
+		#expect(floatsAreEqual(expected.y, result.y, accuracy: 0.0001))
 		result = segment.pointAlongCurve(t: 1.0)
 		expected = CGPoint(x: 8, y: 5)
-		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
-		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		#expect(floatsAreEqual(expected.x, result.x, accuracy: 0.0001))
+		#expect(floatsAreEqual(expected.y, result.y, accuracy: 0.0001))
 
 		let path2 = generateSimpleCurve2()
 		let segment2 = path2.segments.last!
 
 		result = segment2.percentAlongCurve(0.25)!
 		expected = CGPoint(x: 3.107779, y: 4.333667)
-		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
-		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		#expect(floatsAreEqual(expected.x, result.x, accuracy: 0.0001))
+		#expect(floatsAreEqual(expected.y, result.y, accuracy: 0.0001))
 		result = segment2.pointAlongCurve(t: 0.25)
 		expected = CGPoint(x: 2.375, y: 4.4375)
-		XCTAssertEqual(expected.x, result.x, accuracy: 0.0001)
-		XCTAssertEqual(expected.y, result.y, accuracy: 0.0001)
+		#expect(floatsAreEqual(expected.x, result.x, accuracy: 0.0001))
+		#expect(floatsAreEqual(expected.y, result.y, accuracy: 0.0001))
 
 		// confirmed all these points through manual entry in affinity designer
 		let length = segment.length
-		XCTAssertEqual(7.34655, length, accuracy: 0.00001)
+		#expect(floatsAreEqual(7.34655, length, accuracy: 0.00001))
 		let percentagePoints = stride(from: CGFloat(0.0), through: 1.0, by: 0.1).compactMap { segment.percentAlongCurve($0) }
-		let expectedPoints: [(CGPoint, UInt)] = [
+		let expectedPoints: [(CGPoint, Int)] = [
 			(CGPoint(x: 2.0, y: 5.0), #line),
 			(CGPoint(x: 2.2657412053662127, y: 4.335223675671046), #line),
 			(CGPoint(x: 2.8580442469607505, y: 3.9119229270450613), #line),
@@ -179,12 +180,12 @@ class CGPathExtensionsTests: XCTestCase {
 			(CGPoint(x: 8.0, y: 5.0), #line),
 		]
 		for (result, expected) in zip(percentagePoints, expectedPoints) {
-			XCTAssertEqual(expected.0.x, result.x, accuracy: 0.01, line: expected.1)
-			XCTAssertEqual(expected.0.y, result.y, accuracy: 0.01, line: expected.1)
+			#expect(floatsAreEqual(expected.0.x, result.x, accuracy: 0.01), sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: expected.1, column: #column))
+			#expect(floatsAreEqual(expected.0.y, result.y, accuracy: 0.01), sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: expected.1, column: #column))
 		}
 
 		let tPoints = stride(from: CGFloat(0.0), through: 1.0, by: 0.1).compactMap { segment.pointAlongCurve(t: $0) }
-		let expectedtPoints: [(CGPoint, UInt)] = [
+		let expectedtPoints: [(CGPoint, Int)] = [
 			(CGPoint(x: 2.0, y: 5.0), #line),
 			(CGPoint(x: 2.168, y: 4.460000000000001), #line),
 			(CGPoint(x: 2.6240000000000006, y: 4.040000000000001), #line),
@@ -198,18 +199,20 @@ class CGPathExtensionsTests: XCTestCase {
 			(CGPoint(x: 8.0, y: 5.0), #line),
 		]
 		for (result, expected) in zip(tPoints, expectedtPoints) {
-			XCTAssertEqual(expected.0.x, result.x, accuracy: 0.01, line: expected.1)
-			XCTAssertEqual(expected.0.y, result.y, accuracy: 0.01, line: expected.1)
+			#expect(floatsAreEqual(expected.0.x, result.x, accuracy: 0.01), sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: expected.1, column: #column))
+			#expect(floatsAreEqual(expected.0.y, result.y, accuracy: 0.01), sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: expected.1, column: #column))
+
 		}
 	}
 
-	func testPointAlongPath() {
+	@available(OSX 10.13, iOS 11.0, tvOS 11.0, watchOS 4.0, *)
+	@Test func testPointAlongPath() {
 		let path = generateSimplePath()
 
 		let length = path.length
-		XCTAssertEqual(7.34655280261004, length, accuracy: 0.00001)
+		#expect(floatsAreEqual(7.34655280261004, length, accuracy: 0.00001))
 		let percentagePoints = stride(from: CGFloat(0.0), through: 1.0, by: 0.1).compactMap { path.percentAlongPath($0) }
-		let expectedPoints: [(CGPoint, UInt)] = [
+		let expectedPoints: [(CGPoint, Int)] = [
 			(CGPoint(x: 2.0, y: 5.0), #line),
 			(CGPoint(x: 2.2578125, y: 4.34375), #line),
 			(CGPoint(x: 2.857953127107415, y: 3.911861477399667), #line),
@@ -222,34 +225,11 @@ class CGPathExtensionsTests: XCTestCase {
 			(CGPoint(x: 7.7421875, y: 4.34375), #line),
 			(CGPoint(x: 8.0, y: 5.0), #line),
 		]
-		XCTAssertEqual(percentagePoints.count, expectedPoints.count)
+		#expect(percentagePoints.count == expectedPoints.count)
 		for (result, expected) in zip(percentagePoints, expectedPoints) {
-			XCTAssertEqual(expected.0.x, result.x, accuracy: 0.005, line: expected.1)
-			XCTAssertEqual(expected.0.y, result.y, accuracy: 0.005, line: expected.1)
+			#expect(floatsAreEqual(expected.0.x, result.x, accuracy: 0.005), sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: expected.1, column: #column))
+			#expect(floatsAreEqual(expected.0.y, result.y, accuracy: 0.005), sourceLocation: SourceLocation(fileID: #fileID, filePath: #filePath, line: expected.1, column: #column))
 		}
-	}
-
-	// this is just a scratchpad - not meant as a real test
-	func testDeallocate() throws {
-		class Classy {}
-		typealias Gen<T: AnyObject> = () -> T
-		let sem = DispatchSemaphore(value: 0)
-
-		func a<T: AnyObject>(_ gen: Gen<T>) {
-			let foo = gen()
-			print("immediate: \(foo)")
-			DispatchQueue.global().asyncAfter(deadline: .now() + 3) { [weak foo] in
-				print("delayed: \(foo as Any)")
-				XCTAssertNil(foo)
-				sem.signal()
-			}
-		}
-
-		a({
-			let t = generateSimplePath()
-			let sections = t.sections.first!
-			return sections
-		})
-		sem.wait()
 	}
 }
+#endif
