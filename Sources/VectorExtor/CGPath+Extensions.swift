@@ -5,11 +5,11 @@ import CoreGraphics
 public extension CGPath {
 	var segments: [Segment] {
 		var accumulator: [Segment] = []
-		var closeEnd: CGPoint?
+		var tentativeCloseEnd: CGPoint?
 		applyWithBlock { elementsPointer in
-			func setClose(_ new: CGPoint?) {
-				if closeEnd == nil {
-					closeEnd = new
+			func setTentativeCloseSubpathEnd(_ new: CGPoint?) {
+				if tentativeCloseEnd == nil {
+					tentativeCloseEnd = new
 				}
 			}
 
@@ -20,25 +20,25 @@ public extension CGPath {
 			case .moveToPoint:
 				let point = element.points[0]
 				curve = .moveTo(.init(startPoint: prevEnd, endPoint: point))
-				setClose(prevEnd)
+				setTentativeCloseSubpathEnd(prevEnd)
 			case .addLineToPoint:
 				let point = element.points[0]
 				curve = .addLineTo(.init(startPoint: prevEnd, endPoint: point))
-				setClose(prevEnd)
+				setTentativeCloseSubpathEnd(prevEnd)
 			case .addQuadCurveToPoint:
 				let point = element.points[1]
 				let control = element.points[0]
 				curve = .addQuadCurveTo(.init(startPoint: prevEnd, controlPoint: control, endPoint: point))
-				setClose(prevEnd)
+				setTentativeCloseSubpathEnd(prevEnd)
 			case .addCurveToPoint:
 				let point = element.points[2]
 				let control1 = element.points[0]
 				let control2 = element.points[1]
 				curve = .addCurveTo(.init(startPoint: prevEnd, control1: control1, control2: control2, endPoint: point))
-				setClose(prevEnd)
+				setTentativeCloseSubpathEnd(prevEnd)
 			case .closeSubpath:
-				curve = .close(.init(startPoint: prevEnd, endPoint: closeEnd ?? .zero))
-				closeEnd = nil
+				curve = .close(.init(startPoint: prevEnd, endPoint: tentativeCloseEnd ?? .zero))
+				tentativeCloseEnd = nil
 			@unknown default:
 				print("Unknown path element type: \(element.type) \(element.type.rawValue)")
 				return
