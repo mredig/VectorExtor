@@ -1,5 +1,5 @@
 import Foundation
-#if os(macOS) || os(watchOS) || os(iOS) || os(tvOS)
+#if canImport(CoreGraphics)
 import CoreGraphics
 #endif
 
@@ -31,6 +31,7 @@ public extension BinaryFloatingPoint {
 	let clamped = example.clamped(to: 0...10) // 0 - as expected
 	```
 	*/
+	@inline(__always)
 	func clamped(to range: ClosedRange<Self> = 0...1) -> Self {
 		Swift.max(range.lowerBound, Swift.min(self, range.upperBound))
 	}
@@ -42,13 +43,18 @@ public extension BinaryFloatingPoint {
 
 
 	#if arch(arm64) // see Float16 docs
-	@available(macOS 11.0, iOS 14.0, *)
+	@available(macOS 11.0, iOS 14.0, tvOS 14.0, *)
+	@inline(__always)
 	var toFloat16: Float16 { Float16(self) }
 	#endif
+	@inline(__always)
 	var toFloat: Float { Float(self) }
+	@inline(__always)
 	var toCGFloat: CGFloat { CGFloat(self) }
+	@inline(__always)
 	var toDouble: Double { Double(self) }
 	#if arch(x86_64)
+	@inline(__always)
 	var toFloat80: Float80 { Float80(self) }
 	#endif
 }
@@ -68,6 +74,7 @@ public extension BinaryInteger {
 	let clamped = example.clamped(to: 0...10) // 0 - as expected
 	```
 	*/
+	@inline(__always)
 	func clamped(to range: ClosedRange<Self> = 0...1) -> Self {
 		Swift.max(range.lowerBound, Swift.min(self, range.upperBound))
 	}

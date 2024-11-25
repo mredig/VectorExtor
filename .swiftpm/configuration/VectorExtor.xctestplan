@@ -1,0 +1,32 @@
+{
+  "configurations" : [
+    {
+      "id" : "96A87800-4295-4DE1-BFAC-4C2CA5A73F40",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:",
+          "identifier" : "VectorExtor",
+          "name" : "VectorExtor"
+        }
+      ]
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "VectorExtorTests",
+        "name" : "VectorExtorTests"
+      }
+    }
+  ],
+  "version" : 1
+}
